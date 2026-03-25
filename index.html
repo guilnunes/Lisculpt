@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lisculpt — Sculpture Portfolio Platform</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind = { config: {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ["Cormorant Garamond", "serif"],
+            ui: ["Syne", "sans-serif"],
+          },
+          colors: {
+            parchment: "#F2EFE9",
+            ink:       "#0D0D0D",
+            stone:     "#7A7770",
+            fog:       "#C8C5BF",
+            warm:      "#E8E4DC",
+          }
+        }
+      }
+    }};
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: #F2EFE9; }
+    body { font-family: 'Syne', sans-serif; background: #F2EFE9; color: #0D0D0D; margin: 0; }
+
+    /* ── Grain overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23g)' opacity='0.07'/%3E%3C/svg%3E");
+    }
+
+    /* ── Masonry grid ── */
+    .masonry { columns: 2; column-gap: 2px; }
+    @media (min-width: 768px)  { .masonry { columns: 3; } }
+    @media (min-width: 1280px) { .masonry { columns: 4; } }
+    .masonry-item { break-inside: avoid; margin-bottom: 2px; display: block; }
+
+    /* ── Artwork card ── */
+    .artwork-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: block;
+      background: #1a1a1a;
+    }
+    .artwork-card img,
+    .artwork-card video {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  filter 0.5s ease;
+      filter: grayscale(20%);
+    }
+    .artwork-card:hover img,
+    .artwork-card:hover video {
+      transform: scale(1.06);
+      filter: grayscale(0%);
+    }
+    .artwork-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.93) 0%, rgba(5,5,5,0.5) 60%, transparent 100%);
+      padding: 2.5rem 1.25rem 1.25rem;
+      transform: translateY(110%);
+      transition: transform 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .artwork-card:hover .artwork-overlay { transform: translateY(0); }
+
+    /* ── Card index number ── */
+    .card-index {
+      position: absolute;
+      top: 10px; left: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.3);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ── Video badge ── */
+    .video-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
+      padding: 4px 8px;
+      display: flex; align-items: center; gap: 4px;
+      z-index: 2;
+    }
+
+    /* ── Filter pills ── */
+    .pill {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.85rem;
+      border: 1px solid #C8C5BF;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      background: transparent;
+      color: #7A7770;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .pill:hover           { border-color: #0D0D0D; color: #0D0D0D; }
+    .pill.active          { background: #0D0D0D; border-color: #0D0D0D; color: #F2EFE9; }
+
+    /* ── Nav links ── */
+    .nav-link {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7A7770;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: #0D0D0D; }
+
+    /* ── Hero image ── */
+    .hero-img {
+      width: 100%; height: 88vh;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.58);
+    }
+
+    /* ── Filter scrollbar ── */
+    .scroll-hide { overflow-x: auto; scrollbar-width: none; }
+    .scroll-hide::-webkit-scrollbar { display: none; }
+
+    /* ── Artist avatar ── */
+    .artist-avatar {
+      width: 100%; aspect-ratio: 4/5;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(30%);
+      transition: filter 0.5s ease, transform 0.6s ease;
+    }
+    .artist-card:hover .artist-avatar {
+      filter: grayscale(0%);
+      transform: scale(1.04);
+    }
+
+    /* ── Tag chip ── */
+    .chip {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.75);
+      padding: 0.2rem 0.65rem;
+      display: inline-block;
+    }
+    .chip-dark {
+      border-color: #C8C5BF;
+      color: #7A7770;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.65rem;
+      display: inline-block;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.55s ease forwards; }
+    .fade-up-1 { animation: fadeUp 0.55s 0.08s ease both; }
+    .fade-up-2 { animation: fadeUp 0.55s 0.18s ease both; }
+    .fade-up-3 { animation: fadeUp 0.55s 0.28s ease both; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar        { width: 3px; }
+    ::-webkit-scrollbar-track  { background: #F2EFE9; }
+    ::-webkit-scrollbar-thumb  { background: #C8C5BF; border-radius: 2px; }
+
+    /* ── Artist hero ── */
+    .artist-hero-img {
+      width: 100%; height: 70vh;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.48);
+    }
+
+    /* ── Divider ── */
+    .vdivider { width: 1px; background: #C8C5BF; flex-shrink: 0; }
+
+    /* ── Work description card ── */
+    .work-desc-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.95) 0%, transparent 100%);
+      padding: 3rem 1.5rem 1.5rem;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .artwork-card:hover .work-desc-overlay { opacity: 1; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║            NAVIGATION               ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <header id="site-header"
+          class="fixed top-0 left-0 right-0 z-50 bg-parchment/92 backdrop-blur-md"
+          style="border-bottom: 1px solid #C8C5BF;">
+    <div class="max-w-screen-2xl mx-auto px-6 h-[52px] flex items-center justify-between">
+
+      <button onclick="navigate('/')"
+              class="font-display text-[1.55rem] font-light tracking-[0.18em] text-ink leading-none">
+        Lisculpt
+      </button>
+
+      <nav class="flex items-center gap-8">
+        <button onclick="navigate('/')" class="nav-link">Gallery</button>
+        <button onclick="scrollToArtists()" class="nav-link">Artists</button>
+        <button class="nav-link">About</button>
+        <button class="nav-link border border-ink px-5 py-2 text-ink hover:bg-ink hover:text-parchment transition-colors duration-200"
+                style="color: #0D0D0D; border-color: #0D0D0D;">
+          Submit Work
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║             HOME VIEW               ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="view-home">
+
+    <!-- Featured Hero -->
+    <section class="relative" style="padding-top: 52px;">
+      <div class="relative">
+        <img id="hero-img" src="" alt="" class="hero-img" />
+
+        <!-- Bottom overlay -->
+        <div class="absolute inset-0 flex flex-col justify-end"
+             style="padding: 3rem 2.5rem 3.5rem;">
+          <div class="max-w-screen-2xl mx-auto w-full">
+
+            <div class="mb-3 fade-up">
+              <span style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.5);">
+                Featured Sculptor
+              </span>
+            </div>
+
+            <div class="flex items-end justify-between gap-8">
+              <div>
+                <h1 id="hero-name"
+                    class="font-display text-white font-light leading-none mb-2 fade-up-1"
+                    style="font-size: clamp(3.5rem, 9vw, 8rem);">
+                </h1>
+                <p id="hero-location"
+                   class="fade-up-2"
+                   style="font-family:'Syne',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.55);">
+                </p>
+              </div>
+
+              <button id="hero-cta"
+                      class="fade-up-3 shrink-0 mb-1"
+                      style="font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:white; border:1px solid rgba(255,255,255,0.45); padding:0.9rem 2rem; transition: all 0.3s ease; background: transparent;"
+                      onmouseover="this.style.background='rgba(255,255,255,0.12)'"
+                      onmouseout="this.style.background='transparent'">
+                View Portfolio →
+              </button>
+            </div>
+
+            <div id="hero-tags" class="flex gap-2 mt-5 fade-up-3"></div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Filter Bar -->
+    <div id="filter-bar"
+         class="sticky z-40 bg-parchment/95 backdrop-blur-md scroll-hide"
+         style="top: 52px; border-bottom: 1px solid #C8C5BF;">
+      <div class="px-6 py-2.5 flex items-center gap-5 w-max min-w-full">
+
+        <span id="result-count"
+              style="font-family:'Syne',sans-serif; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:#7A7770; white-space:nowrap; flex-shrink:0;">
+        </span>
+
+        <div class="vdivider" style="height:16px;"></div>
+
+        <div class="flex items-center gap-2.5" style="flex-shrink:0;">
+          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;">Material</span>
+          <div id="filter-material" class="flex gap-1.5"></div>
+        </div>
+
+        <div class="vdivider" style="height:16px;"></div>
+
+        <div class="flex items-center gap-2.5" style="flex-shrink:0;">
+          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;">Country</span>
+          <div id="filter-country" class="flex gap-1.5"></div>
+        </div>
+
+        <div class="vdivider" style="height:16px;"></div>
+
+        <div class="flex items-center gap-2.5" style="flex-shrink:0;">
+          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;">Style</span>
+          <div id="filter-style" class="flex gap-1.5"></div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Masonry Grid -->
+    <main class="px-1.5 pt-1.5 pb-1.5">
+      <div id="artwork-grid" class="masonry"></div>
+      <div id="no-results"
+           class="hidden text-center py-32 font-display text-4xl italic"
+           style="color:#7A7770;">
+        No works found.
+      </div>
+    </main>
+
+
+    <!-- Artists section -->
+    <section id="artists-section"
+             class="mt-8"
+             style="border-top: 1px solid #C8C5BF;">
+      <div class="max-w-screen-xl mx-auto px-8 pt-16 pb-20">
+
+        <div class="flex items-end justify-between mb-14"
+             style="border-bottom: 1px solid #C8C5BF; padding-bottom: 1.25rem;">
+          <h2 class="font-display font-light" style="font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.04em;">
+            Our Sculptors
+          </h2>
+          <span style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#7A7770;">
+            — 5 Artists
+          </span>
+        </div>
+
+        <div id="artists-list"
+             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /view-home -->
+
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║            ARTIST VIEW              ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="view-artist" class="hidden">
+
+    <!-- Hero -->
+    <div style="padding-top: 52px;">
+      <div class="relative">
+        <img id="artist-hero-img" src="" alt="" class="artist-hero-img" />
+
+        <div class="absolute inset-0 flex flex-col justify-between"
+             style="padding: 2rem 2.5rem;">
+
+          <!-- Back button -->
+          <div>
+            <button onclick="navigate('/')"
+                    style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.6); background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; transition:color 0.2s;"
+                    onmouseover="this.style.color='rgba(255,255,255,0.95)'"
+                    onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5"/>
+              </svg>
+              Back to Gallery
+            </button>
+          </div>
+
+          <!-- Name + location -->
+          <div>
+            <div id="artist-page-tags" class="flex gap-2 mb-5"></div>
+            <h1 id="artist-page-name"
+                class="font-display text-white font-light leading-none mb-3"
+                style="font-size: clamp(3rem, 8vw, 7.5rem);">
+            </h1>
+            <p id="artist-page-location"
+               style="font-family:'Syne',sans-serif; font-size:0.7rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.5);">
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bio + Stats -->
+    <div class="max-w-screen-xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-16"
+         style="border-bottom: 1px solid #C8C5BF;">
+
+      <div class="md:col-span-2">
+        <p id="artist-page-bio"
+           class="font-display font-light leading-relaxed"
+           style="font-size: 1.25rem; color: rgba(13,13,13,0.78);">
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-10">
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Works</div>
+          <div id="artist-work-count"
+               class="font-display font-light" style="font-size:3.5rem; line-height:1;">
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Based in</div>
+          <div id="artist-page-city"
+               class="font-display font-light" style="font-size:1.2rem;">
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.6rem;">Materials</div>
+          <div id="artist-materials" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Works grid -->
+    <div class="px-1.5 py-1.5 mt-0">
+      <div class="max-w-screen-2xl mx-auto">
+        <div style="padding: 2.5rem 1.5rem 1.5rem;">
+          <h2 class="font-display font-light"
+              style="font-size:1.75rem; letter-spacing:0.05em; border-bottom:1px solid #C8C5BF; padding-bottom:1rem;">
+            Portfolio
+          </h2>
+        </div>
+        <div id="artist-works-grid" class="masonry px-0 pt-0"></div>
+      </div>
+    </div>
+
+  </div><!-- /view-artist -->
+
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid #C8C5BF; margin-top: 4rem;">
+    <div class="max-w-screen-xl mx-auto px-8 py-10 flex items-center justify-between">
+      <span class="font-display font-light" style="font-size:1.4rem; letter-spacing:0.18em; color:#7A7770;">
+        Lisculpt
+      </span>
+      <p style="font-family:'Syne',sans-serif; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:#7A7770;">
+        © 2025 — A Platform for Sculptors
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║          DATA + APPLICATION         ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <script>
+
+  // ──────────────────────────────────────────
+  // PLACEHOLDER  (no network required)
+  // Generates inline SVG data URIs so the site
+  // works when opened directly from file://.
+  // Replace these with real image paths in prod.
+  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────
+  // DATA — loaded from sculptors.json
+  // ──────────────────────────────────────────
+  let DATA = { artists: [] };
+
+  // ──────────────────────────────────────────
+  // STATE
+  // ──────────────────────────────────────────
+  const state = {
+    filters: { material: 'All', country: 'All', style: 'All' }
+  };
+
+  // ──────────────────────────────────────────
+  // ROUTING
+  // ──────────────────────────────────────────
+  function navigate(path) {
+    location.hash = '#' + path;
+  }
+
+  function handleRoute() {
+    const hash  = location.hash || '#/';
+    const path  = hash.slice(1); // remove leading #
+    const parts = path.split('/').filter(Boolean);
+
+    if (parts[0] === 'artist' && parts[1]) {
+      showArtist(parts[1]);
+    } else {
+      showHome();
+    }
+  }
+
+  window.addEventListener('hashchange', handleRoute);
+
+  window.addEventListener('DOMContentLoaded', () => {
+    fetch('sculptors.json')
+      .then(r => r.json())
+      .then(data => {
+        DATA = data;
+        handleRoute();
+      })
+      .catch(err => {
+        console.error('Failed to load sculptors.json:', err);
+        document.getElementById('view-home').innerHTML =
+          '<p style="padding:4rem;font-family:Syne,sans-serif;color:#7A7770;">Could not load sculptor data. Make sure sculptors.json is in the same folder.</p>';
+      });
+  });
+
+  // ──────────────────────────────────────────
+  // VIEW: HOME
+  // ──────────────────────────────────────────
+  function showHome() {
+    document.getElementById('view-home').classList.remove('hidden');
+    document.getElementById('view-artist').classList.add('hidden');
+    window.scrollTo({ top: 0 });
+
+    const featured = DATA.artists.find(a => a.featured);
+    renderHero(featured);
+    renderFilters();
+    renderGrid();
+    renderArtistsList();
+  }
+
+  function scrollToArtists() {
+    if (!document.getElementById('view-home').classList.contains('hidden')) {
+      document.getElementById('artists-section').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => document.getElementById('artists-section').scrollIntoView({ behavior: 'smooth' }), 200);
+    }
+  }
+
+  // ──────────────────────────────────────────
+  // HERO
+  // ──────────────────────────────────────────
+  function renderHero(artist) {
+    if (!artist) return;
+    const aw = artist.artworks[0];
+    document.getElementById('hero-img').src      = aw.image;
+    document.getElementById('hero-img').alt      = aw.title;
+    document.getElementById('hero-name').textContent     = artist.name;
+    document.getElementById('hero-location').textContent = `${artist.city}, ${artist.country}`;
+
+    document.getElementById('hero-tags').innerHTML = artist.tags
+      .map(t => `<span class="chip">${t}</span>`)
+      .join('');
+
+    document.getElementById('hero-cta').onclick = () => navigate(`/artist/${artist.id}`);
+  }
+
+  // ──────────────────────────────────────────
+  // FILTERS
+  // ──────────────────────────────────────────
+  function renderFilters() {
+    const all       = getAllArtworks();
+    const materials = ['All', ...unique(all.map(a => a.material))];
+    const countries = ['All', ...unique(DATA.artists.map(a => a.country))];
+    const styles    = ['All', ...unique(all.map(a => a.style))];
+
+    buildPills('filter-material', materials, 'material');
+    buildPills('filter-country',  countries, 'country');
+    buildPills('filter-style',    styles,    'style');
+    updateCount();
+  }
+
+  function buildPills(id, options, key) {
+    document.getElementById(id).innerHTML = options
+      .map(opt => `<button class="pill${state.filters[key] === opt ? ' active' : ''}"
+                           onclick="setFilter('${key}','${opt}')">${opt}</button>`)
+      .join('');
+  }
+
+  function setFilter(key, value) {
+    state.filters[key] = value;
+    renderFilters();
+    renderGrid();
+  }
+
+  function updateCount() {
+    const n = getFiltered().length;
+    document.getElementById('result-count').textContent = `${n} work${n !== 1 ? 's' : ''}`;
+  }
+
+  // ──────────────────────────────────────────
+  // DATA HELPERS
+  // ──────────────────────────────────────────
+  function getAllArtworks() {
+    return DATA.artists.flatMap(a => a.artworks.map(w => ({ ...w, artist: a })));
+  }
+
+  function getFiltered() {
+    return getAllArtworks().filter(w => {
+      if (state.filters.material !== 'All' && w.material  !== state.filters.material)  return false;
+      if (state.filters.country  !== 'All' && w.artist.country !== state.filters.country) return false;
+      if (state.filters.style    !== 'All' && w.style     !== state.filters.style)     return false;
+      return true;
+    });
+  }
+
+  function unique(arr) { return [...new Set(arr)]; }
+
+  // ──────────────────────────────────────────
+  // ARTWORK GRID
+  // ──────────────────────────────────────────
+  function renderGrid() {
+    const works    = getFiltered();
+    const grid     = document.getElementById('artwork-grid');
+    const noRes    = document.getElementById('no-results');
+
+    if (!works.length) {
+      grid.innerHTML = '';
+      noRes.classList.remove('hidden');
+      return;
+    }
+    noRes.classList.add('hidden');
+    grid.innerHTML = works.map((w, i) => cardHTML(w, i)).join('');
+  }
+
+  function cardHTML(w, index) {
+    const num   = String(index + 1).padStart(2, '0');
+    const isVid = !!w.video;
+
+    const media = isVid
+      ? `<video src="${w.video}" poster="${w.image}" muted loop preload="none"
+                style="display:block;width:100%;height:auto;transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94),filter 0.5s ease;filter:grayscale(20%);"
+                onmouseover="this.play()" onmouseout="this.pause()"></video>`
+      : `<img src="${w.image}" alt="${w.title}" loading="lazy"
+              style="display:block;width:100%;height:auto;transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94),filter 0.5s ease;filter:grayscale(20%);" />`;
+
+    const videoBadge = isVid ? `
+      <div class="video-badge">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span style="font-family:'Syne',sans-serif;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.8);">Video</span>
+      </div>` : '';
+
+    return `
+      <div class="masonry-item">
+        <div class="artwork-card"
+             onclick="navigate('/artist/${w.artist.id}')"
+             onmouseover="hoverCard(this,true)"
+             onmouseout="hoverCard(this,false)">
+          <div class="card-index">${num}</div>
+          ${videoBadge}
+          ${media}
+          <div class="artwork-overlay">
+            <div style="font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">
+              ${w.artist.name}
+            </div>
+            <div class="font-display" style="color:white;font-size:1.3rem;font-weight:300;line-height:1.2;margin-bottom:8px;">
+              ${w.title}
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-family:'Syne',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.45);">${w.material}</span>
+              <span style="color:rgba(255,255,255,0.25);font-size:0.6rem;">·</span>
+              <span style="font-family:'Syne',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.45);">${w.year}</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function hoverCard(el, entering) {
+    const img = el.querySelector('img');
+    if (img) {
+      img.style.transform = entering ? 'scale(1.06)' : 'scale(1)';
+      img.style.filter    = entering ? 'grayscale(0%)'  : 'grayscale(20%)';
+    }
+  }
+
+  // ──────────────────────────────────────────
+  // ARTISTS LIST
+  // ──────────────────────────────────────────
+  function renderArtistsList() {
+    document.getElementById('artists-list').innerHTML = DATA.artists.map((a, i) => `
+      <div class="artist-card cursor-pointer" onclick="navigate('/artist/${a.id}')">
+        <div style="overflow:hidden;margin-bottom:1rem;aspect-ratio:4/5;">
+          <img src="${a.avatar}" alt="${a.name}" class="artist-avatar" loading="lazy" />
+        </div>
+        <div class="font-display" style="font-size:1.2rem;font-weight:300;margin-bottom:3px;">${a.name}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:#7A7770;margin-bottom:8px;">${a.city}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">
+          ${a.tags.map(t => `<span class="chip-dark">${t}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ──────────────────────────────────────────
+  // VIEW: ARTIST
+  // ──────────────────────────────────────────
+  function showArtist(id) {
+    const artist = DATA.artists.find(a => a.id === id);
+    if (!artist) { navigate('/'); return; }
+
+    document.getElementById('view-home').classList.add('hidden');
+    document.getElementById('view-artist').classList.remove('hidden');
+    window.scrollTo({ top: 0 });
+
+    // Hero
+    document.getElementById('artist-hero-img').src          = artist.artworks[0].image;
+    document.getElementById('artist-hero-img').alt          = artist.name;
+    document.getElementById('artist-page-name').textContent     = artist.name;
+    document.getElementById('artist-page-location').textContent = `${artist.city}, ${artist.country}`;
+    document.getElementById('artist-page-bio').textContent      = artist.bio;
+    document.getElementById('artist-work-count').textContent    = String(artist.artworks.length).padStart(2, '0');
+    document.getElementById('artist-page-city').textContent     = `${artist.city}, ${artist.country}`;
+
+    document.getElementById('artist-page-tags').innerHTML = artist.tags
+      .map(t => `<span class="chip">${t}</span>`)
+      .join('');
+
+    const mats = unique(artist.artworks.map(a => a.material));
+    document.getElementById('artist-materials').innerHTML = mats
+      .map(m => `<span class="chip-dark">${m}</span>`)
+      .join('');
+
+    // Works grid
+    document.getElementById('artist-works-grid').innerHTML =
+      artist.artworks.map((w, i) => cardHTML({ ...w, artist }, i)).join('');
+  }
+
+  </script>
+
+</body>
+</html>
