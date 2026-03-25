@@ -1,0 +1,816 @@
+{
+  "artists": [
+    {
+      "id": "steve-winterburn",
+      "name": "Steve Winterburn",
+      "country": "United Kingdom",
+      "city": "London",
+      "instagram": "https://www.instagram.com/stevewinterburn",
+      "bio": "Steve Winterburn works primarily in bronze and clay, producing figurative and animal sculptures of rare anatomical precision. Based in London, his work moves between classical tradition and inventive anthropomorphic compositions — subjects caught at the exact threshold between human and animal. His bronzes carry a textural richness that rewards close looking.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/steve-winterburn/avatar.jpg",
+      "featured": true,
+      "rating": 10,
+      "living": true,
+      "mould": true,
+      "tags": ["Anatomical", "Anthropomorphism", "Classic", "Realistic", "Textured"],
+      "themes": ["Animal", "Figurative", "Human"],
+      "materials": ["Bronze", "Clay"],
+      "artworks": [
+        {
+          "id": "steve-winterburn-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Bronze",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/steve-winterburn/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "steve-winterburn-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/steve-winterburn/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "steve-winterburn-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Bronze",
+          "style": "Animal",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/steve-winterburn/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "steve-winterburn-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Bronze",
+          "style": "Classic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/steve-winterburn/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "andrian-melka",
+      "name": "Andrian Melka",
+      "country": "United Kingdom",
+      "city": "London",
+      "instagram": "https://www.instagram.com/melka_sculpture",
+      "bio": "Andrian Melka is a London-based sculptor working across bronze, clay, marble and stone. His portraits and figurative work are defined by an unflinching anatomical rigour — faces and bodies rendered with a psychological weight that goes beyond likeness. Trained in classical traditions, Melka's practice is a sustained argument for the enduring relevance of the human form.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrian-melka/avatar.jpg",
+      "featured": false,
+      "rating": 10,
+      "living": true,
+      "mould": true,
+      "tags": ["Anatomical", "Classic", "Portrait", "Realistic"],
+      "themes": ["Figurative", "Human"],
+      "materials": ["Bronze", "Clay", "Marble", "Stone"],
+      "artworks": [
+        {
+          "id": "andrian-melka-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Bronze",
+          "style": "Portrait",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrian-melka/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "andrian-melka-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Marble",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrian-melka/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "andrian-melka-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Clay",
+          "style": "Portrait",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrian-melka/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "andrian-melka-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Stone",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrian-melka/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "adam-matano",
+      "name": "Adam Matano",
+      "country": "United States",
+      "city": "New York",
+      "instagram": "https://www.instagram.com/adammatanosculpture",
+      "bio": "Adam Matano sculpts in bronze and clay, occupying a rare zone where anatomical precision meets playful anthropomorphism. His animal and human figures share a visual language — the same muscular intelligence applied to both, as if the boundary between species is mostly a matter of posture. Based in the United States, his work is collected internationally and recognised for the wit embedded in its technical mastery.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/adam-matano/avatar.jpg",
+      "featured": false,
+      "rating": 9,
+      "living": true,
+      "mould": true,
+      "tags": ["Anatomical", "Anthropomorphism", "Classic", "Creative bases", "Realistic"],
+      "themes": ["Animal", "Figurative", "Human"],
+      "materials": ["Bronze", "Clay"],
+      "artworks": [
+        {
+          "id": "adam-matano-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Bronze",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/adam-matano/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "adam-matano-02",
+          "title": "Work 02",
+          "year": 2024,
+          "material": "Clay",
+          "style": "Animal",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/adam-matano/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "adam-matano-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Bronze",
+          "style": "Anthropomorphism",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/adam-matano/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "adam-matano-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Bronze",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/adam-matano/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "pierre-jean-chabert",
+      "name": "Pierre-Jean Chabert",
+      "country": "France",
+      "city": "Paris",
+      "instagram": "https://www.instagram.com/pj.chabert",
+      "bio": "Pierre-Jean Chabert works in bronze and clay from his Paris studio, producing animal and figurative sculptures distinguished by a deconstructed realism — forms that are simultaneously precise and deliberately unresolved. His textured surfaces carry the trace of process: the hand, the tool, the decision to leave something incomplete. The result is work that feels caught mid-breath.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pierre-jean-chabert/avatar.jpg",
+      "featured": false,
+      "rating": 9,
+      "living": true,
+      "mould": true,
+      "tags": ["Deconstructed", "Realistic", "Textured"],
+      "themes": ["Animal", "Figurative"],
+      "materials": ["Bronze", "Clay"],
+      "artworks": [
+        {
+          "id": "pierre-jean-chabert-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Bronze",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pierre-jean-chabert/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "pierre-jean-chabert-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Clay",
+          "style": "Animal",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pierre-jean-chabert/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "pierre-jean-chabert-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Bronze",
+          "style": "Deconstructed",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pierre-jean-chabert/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "pierre-jean-chabert-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Bronze",
+          "style": "Textured",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pierre-jean-chabert/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "pati-guidi",
+      "name": "Pati Guidi",
+      "country": "Brazil",
+      "city": "São Paulo",
+      "instagram": "https://www.instagram.com/pati.guidi",
+      "bio": "Pati Guidi is a São Paulo-based ceramicist and sculptor whose work draws on the figurative tradition while pushing it toward the ornamental and the visceral. Working in ceramics, clay and experimental materials, her pieces move between classical anatomy and expressive distortion — the human body as a site of ritual, beauty, and controlled excess.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pati-guidi/avatar.jpg",
+      "featured": false,
+      "rating": 9,
+      "living": true,
+      "mould": true,
+      "tags": ["Anatomical", "Classic", "Dynamic poses", "Ornamental"],
+      "themes": ["Abstract", "Figurative", "Human"],
+      "materials": ["Ceramics", "Clay", "Creative materials"],
+      "artworks": [
+        {
+          "id": "pati-guidi-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Ceramics",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pati-guidi/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "pati-guidi-02",
+          "title": "Work 02",
+          "year": 2024,
+          "material": "Clay",
+          "style": "Ornamental",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pati-guidi/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "pati-guidi-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Ceramics",
+          "style": "Abstract",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pati-guidi/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "pati-guidi-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/pati-guidi/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "andrew-joseph-keith",
+      "name": "Andrew Joseph Keith",
+      "country": "United States",
+      "city": "Los Angeles",
+      "instagram": "https://www.instagram.com/andrewjosephkeith15",
+      "bio": "Andrew Joseph Keith works in clay and stone, producing figurative and human-form sculptures that push the body toward geometry. His work is defined by dynamic, tension-filled poses and a surface discipline that sits between realism and structural abstraction — figures that look as though they are in the process of becoming something else.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrew-joseph-keith/avatar.jpg",
+      "featured": false,
+      "rating": 7,
+      "living": true,
+      "mould": false,
+      "tags": ["Anatomical", "Dynamic poses", "Geometric", "Realistic"],
+      "themes": ["Figurative", "Human"],
+      "materials": ["Clay", "Stone"],
+      "artworks": [
+        {
+          "id": "andrew-joseph-keith-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrew-joseph-keith/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "andrew-joseph-keith-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Stone",
+          "style": "Geometric",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrew-joseph-keith/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "andrew-joseph-keith-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Clay",
+          "style": "Dynamic poses",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrew-joseph-keith/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "andrew-joseph-keith-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Clay",
+          "style": "Realistic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/andrew-joseph-keith/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "sasha-samsonova",
+      "name": "Sasha Samsonova",
+      "country": "Russia",
+      "city": "Moscow",
+      "instagram": "https://www.instagram.com/istota_istoti",
+      "bio": "Sasha Samsonova works exclusively in ceramics, producing abstract and deconstructed forms that resist easy categorisation. Her pieces occupy the threshold between pottery and sculpture — vessels that have abandoned function, objects that propose new ones. The surfaces carry a deliberate rawness, a refusal of finish that gives her work an unresolved, searching quality.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sasha-samsonova/avatar.jpg",
+      "featured": false,
+      "rating": 7,
+      "living": true,
+      "mould": false,
+      "tags": ["Deconstructed"],
+      "themes": ["Abstract", "Pottery"],
+      "materials": ["Ceramics"],
+      "artworks": [
+        {
+          "id": "sasha-samsonova-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Ceramics",
+          "style": "Abstract",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sasha-samsonova/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "sasha-samsonova-02",
+          "title": "Work 02",
+          "year": 2024,
+          "material": "Ceramics",
+          "style": "Deconstructed",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sasha-samsonova/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "sasha-samsonova-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Ceramics",
+          "style": "Pottery",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sasha-samsonova/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "sasha-samsonova-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Ceramics",
+          "style": "Abstract",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sasha-samsonova/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "yoshitoshi-kanemaki",
+      "name": "Yoshitoshi Kanemaki",
+      "country": "Japan",
+      "city": "Tokyo",
+      "instagram": "https://www.instagram.com/kanemaki_yoshitoshi",
+      "bio": "Yoshitoshi Kanemaki carves directly into wood, producing multi-faced figurative sculptures of extraordinary conceptual density. His figures — often a single body splitting into several faces — explore identity, perception, and the impossibility of singular selfhood. Working from Tokyo, his practice draws from Japanese craft tradition while arriving at something entirely contemporary and unsettling.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/yoshitoshi-kanemaki/avatar.jpg",
+      "featured": false,
+      "rating": null,
+      "living": true,
+      "mould": false,
+      "tags": ["Figurative", "Surreal"],
+      "themes": ["Human", "Figurative"],
+      "materials": ["Wood"],
+      "artworks": [
+        {
+          "id": "yoshitoshi-kanemaki-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Wood",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/yoshitoshi-kanemaki/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "yoshitoshi-kanemaki-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Wood",
+          "style": "Surreal",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/yoshitoshi-kanemaki/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "yoshitoshi-kanemaki-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Wood",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/yoshitoshi-kanemaki/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "yoshitoshi-kanemaki-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Wood",
+          "style": "Surreal",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/yoshitoshi-kanemaki/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "kenzo-dodo",
+      "name": "Kenzo Dodo",
+      "country": "Japan",
+      "city": "Osaka",
+      "instagram": "https://www.instagram.com/sculpture_kenzo",
+      "bio": "Kenzo Dodo works from Osaka, producing figurative sculpture that layers classical composition with a quiet, distinctly Japanese sense of restraint. His pieces often focus on the human body at rest — stillness as a form of intensity. The surfaces are worked to a fine grain, the gestures deliberate and economical, the emotional register somewhere between serenity and melancholy.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/kenzo-dodo/avatar.jpg",
+      "featured": false,
+      "rating": null,
+      "living": true,
+      "mould": false,
+      "tags": ["Figurative", "Realistic"],
+      "themes": ["Human", "Figurative"],
+      "materials": ["Clay", "Bronze"],
+      "artworks": [
+        {
+          "id": "kenzo-dodo-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/kenzo-dodo/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "kenzo-dodo-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Bronze",
+          "style": "Realistic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/kenzo-dodo/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "kenzo-dodo-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/kenzo-dodo/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "kenzo-dodo-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Bronze",
+          "style": "Classic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/kenzo-dodo/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "centina-alexa",
+      "name": "Centina Alexa",
+      "country": "Romania",
+      "city": "Bucharest",
+      "instagram": "https://www.instagram.com/centinaalexa",
+      "bio": "Centina Alexa is a sculptor whose practice explores organic form and the human figure with an expressive, material-forward approach. Her work draws from the body's relationship to nature — forms that appear grown rather than made, surfaces that carry the memory of touch.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/centina-alexa/avatar.jpg",
+      "featured": false,
+      "rating": null,
+      "living": true,
+      "mould": false,
+      "tags": ["Organic", "Figurative"],
+      "themes": ["Human", "Figurative"],
+      "materials": ["Clay"],
+      "artworks": [
+        {
+          "id": "centina-alexa-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/centina-alexa/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "centina-alexa-02",
+          "title": "Work 02",
+          "year": 2024,
+          "material": "Clay",
+          "style": "Organic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/centina-alexa/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "centina-alexa-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/centina-alexa/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "centina-alexa-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Clay",
+          "style": "Abstract",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/centina-alexa/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "jason-tarpley",
+      "name": "Jason Tarpley",
+      "country": "United States",
+      "city": "Nashville",
+      "instagram": "https://www.instagram.com/marshpit_crow77",
+      "bio": "Jason Tarpley's sculpture operates at the intersection of folk art and dark fantasy — rough-hewn, strange, and deeply committed to its own logic. His work pulls from Americana, mythology, and outsider art traditions to produce figures that feel ancient and invented simultaneously. Unsettling without being gratuitous, singular without being obscure.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/jason-tarpley/avatar.jpg",
+      "featured": false,
+      "rating": 7,
+      "living": false,
+      "mould": false,
+      "tags": ["Folk", "Dark"],
+      "themes": ["Figurative", "Human"],
+      "materials": ["Mixed Media"],
+      "artworks": [
+        {
+          "id": "jason-tarpley-01",
+          "title": "Work 01",
+          "year": 2023,
+          "material": "Mixed Media",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/jason-tarpley/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "jason-tarpley-02",
+          "title": "Work 02",
+          "year": 2022,
+          "material": "Mixed Media",
+          "style": "Dark",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/jason-tarpley/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "jason-tarpley-03",
+          "title": "Work 03",
+          "year": 2022,
+          "material": "Mixed Media",
+          "style": "Folk",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/jason-tarpley/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "jason-tarpley-04",
+          "title": "Work 04",
+          "year": 2021,
+          "material": "Mixed Media",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/jason-tarpley/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "ukokobi-osaro",
+      "name": "Ukokobi Osaro Osemengbe",
+      "country": "Nigeria",
+      "city": "Lagos",
+      "instagram": "https://www.instagram.com/limzoar",
+      "bio": "Ukokobi Osaro Osemengbe is a Lagos-based sculptor whose work engages with the human figure through an Afro-contemporary lens — drawing from Igbo visual traditions, urban Nigerian life, and a formal sophistication that sits comfortably in dialogue with the global sculpture canon. His pieces are politically present without being didactic, personal without being insular.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/ukokobi-osaro/avatar.jpg",
+      "featured": false,
+      "rating": null,
+      "living": true,
+      "mould": false,
+      "tags": ["Figurative", "Contemporary"],
+      "themes": ["Human", "Figurative"],
+      "materials": ["Bronze", "Clay"],
+      "artworks": [
+        {
+          "id": "ukokobi-osaro-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Bronze",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/ukokobi-osaro/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "ukokobi-osaro-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Clay",
+          "style": "Contemporary",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/ukokobi-osaro/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "ukokobi-osaro-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Bronze",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/ukokobi-osaro/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "ukokobi-osaro-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Clay",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/ukokobi-osaro/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "thomas-hildenbrand",
+      "name": "Thomas Hildenbrand",
+      "country": "Germany",
+      "city": "Berlin",
+      "instagram": "https://www.instagram.com/thomas_hildenbrand_bildhauer",
+      "bio": "Thomas Hildenbrand is a German sculptor working in the classical tradition with a contemporary eye. His figurative work in stone and bronze carries the weight of Central European craftsmanship — technically assured, compositionally restrained, and quietly monumental. His studio practice is a patient, deliberate negotiation with material and form.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/thomas-hildenbrand/avatar.jpg",
+      "featured": false,
+      "rating": null,
+      "living": true,
+      "mould": false,
+      "tags": ["Classic", "Figurative", "Realistic"],
+      "themes": ["Human", "Figurative"],
+      "materials": ["Stone", "Bronze"],
+      "artworks": [
+        {
+          "id": "thomas-hildenbrand-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Stone",
+          "style": "Classic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/thomas-hildenbrand/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "thomas-hildenbrand-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Bronze",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/thomas-hildenbrand/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "thomas-hildenbrand-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Stone",
+          "style": "Realistic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/thomas-hildenbrand/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "thomas-hildenbrand-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Bronze",
+          "style": "Classic",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/thomas-hildenbrand/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "sahar-motaharinezad",
+      "name": "Sahar Motaharinezad",
+      "country": "Iran",
+      "city": "Tehran",
+      "instagram": "https://www.instagram.com/sahar_motaharinezhad",
+      "bio": "Sahar Motaharinezad is an Iranian sculptor working with ceramic and mixed materials, exploring the female form and identity through a practice shaped by Persian artistic heritage and contemporary feminist discourse. Her work navigates intimacy and resistance, producing pieces that are fragile in material and forceful in intention.",
+      "avatar": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sahar-motaharinezad/avatar.jpg",
+      "featured": false,
+      "rating": 4,
+      "living": true,
+      "mould": false,
+      "tags": ["Figurative", "Contemporary"],
+      "themes": ["Human", "Figurative"],
+      "materials": ["Ceramics", "Mixed Media"],
+      "artworks": [
+        {
+          "id": "sahar-motaharinezad-01",
+          "title": "Work 01",
+          "year": 2024,
+          "material": "Ceramics",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sahar-motaharinezad/01.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "sahar-motaharinezad-02",
+          "title": "Work 02",
+          "year": 2023,
+          "material": "Mixed Media",
+          "style": "Contemporary",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sahar-motaharinezad/02.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "sahar-motaharinezad-03",
+          "title": "Work 03",
+          "year": 2023,
+          "material": "Ceramics",
+          "style": "Figurative",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sahar-motaharinezad/03.jpg",
+          "video": null,
+          "description": ""
+        },
+        {
+          "id": "sahar-motaharinezad-04",
+          "title": "Work 04",
+          "year": 2022,
+          "material": "Ceramics",
+          "style": "Abstract",
+          "image": "https://raw.githubusercontent.com/guilnunes/Lisculpt/main/images/sahar-motaharinezad/04.jpg",
+          "video": null,
+          "description": ""
+        }
+      ]
+    }
+  ]
+}
