@@ -1,0 +1,192 @@
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: #F2EFE9; }
+body { font-family: 'Syne', sans-serif; background: #F2EFE9; color: #0D0D0D; margin: 0; }
+
+/* ── Grain overlay ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23g)' opacity='0.07'/%3E%3C/svg%3E");
+}
+
+/* ── Masonry grid ── */
+.masonry { columns: 2; column-gap: 2px; }
+@media (min-width: 768px)  { .masonry { columns: 3; } }
+@media (min-width: 1280px) { .masonry { columns: 4; } }
+.masonry-item { break-inside: avoid; margin-bottom: 2px; display: block; }
+
+/* ── Artwork card ── */
+.artwork-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  display: block;
+  background: #1a1a1a;
+}
+.artwork-card img,
+.artwork-card video {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              filter 0.5s ease;
+  filter: grayscale(20%);
+}
+.artwork-card:hover img,
+.artwork-card:hover video {
+  transform: scale(1.06);
+  filter: grayscale(0%);
+}
+.artwork-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(5,5,5,0.93) 0%, rgba(5,5,5,0.5) 60%, transparent 100%);
+  padding: 2.5rem 1.25rem 1.25rem;
+  transform: translateY(110%);
+  transition: transform 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.artwork-card:hover .artwork-overlay { transform: translateY(0); }
+
+/* ── Card index number ── */
+.card-index {
+  position: absolute;
+  top: 10px; left: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.3);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Video badge ── */
+.video-badge {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  padding: 4px 8px;
+  display: flex; align-items: center; gap: 4px;
+  z-index: 2;
+}
+
+/* ── Filter pills ── */
+.pill {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.85rem;
+  border: 1px solid #C8C5BF;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  background: transparent;
+  color: #7A7770;
+  white-space: nowrap;
+  line-height: 1;
+}
+.pill:hover           { border-color: #0D0D0D; color: #0D0D0D; }
+.pill.active          { background: #0D0D0D; border-color: #0D0D0D; color: #F2EFE9; }
+
+/* ── Nav links ── */
+.nav-link {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7A7770;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: #0D0D0D; }
+
+/* ── Hero image ── */
+.hero-img {
+  width: 100%; height: 88vh;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.58);
+}
+
+/* ── Filter scrollbar ── */
+.scroll-hide { overflow-x: auto; scrollbar-width: none; }
+.scroll-hide::-webkit-scrollbar { display: none; }
+
+/* ── Artist avatar ── */
+.artist-avatar {
+  width: 100%; aspect-ratio: 4/5;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(30%);
+  transition: filter 0.5s ease, transform 0.6s ease;
+}
+.artist-card:hover .artist-avatar {
+  filter: grayscale(0%);
+  transform: scale(1.04);
+}
+
+/* ── Tag chip ── */
+.chip {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.75);
+  padding: 0.2rem 0.65rem;
+  display: inline-block;
+}
+.chip-dark {
+  border-color: #C8C5BF;
+  color: #7A7770;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.65rem;
+  display: inline-block;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up   { animation: fadeUp 0.55s ease forwards; }
+.fade-up-1 { animation: fadeUp 0.55s 0.08s ease both; }
+.fade-up-2 { animation: fadeUp 0.55s 0.18s ease both; }
+.fade-up-3 { animation: fadeUp 0.55s 0.28s ease both; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar        { width: 3px; }
+::-webkit-scrollbar-track  { background: #F2EFE9; }
+::-webkit-scrollbar-thumb  { background: #C8C5BF; border-radius: 2px; }
+
+/* ── Artist hero ── */
+.artist-hero-img {
+  width: 100%; height: 70vh;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.48);
+}
+
+/* ── Divider ── */
+.vdivider { width: 1px; background: #C8C5BF; flex-shrink: 0; }
+
+/* ── Work description card ── */
+.work-desc-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(5,5,5,0.95) 0%, transparent 100%);
+  padding: 3rem 1.5rem 1.5rem;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.artwork-card:hover .work-desc-overlay { opacity: 1; }
