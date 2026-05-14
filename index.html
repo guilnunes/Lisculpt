@@ -261,7 +261,7 @@
     <!-- Featured Hero -->
     <section class="relative" style="padding-top: 52px;">
       <div class="relative">
-        <img id="hero-img" src="" alt="" class="hero-img" />
+        <img id="hero-img" src="" alt="" class="hero-img" onerror="onImgError(this)" />
 
         <!-- Bottom overlay -->
         <div class="absolute inset-0 flex flex-col justify-end"
@@ -383,7 +383,7 @@
     <!-- Hero -->
     <div style="padding-top: 52px;">
       <div class="relative">
-        <img id="artist-hero-img" src="" alt="" class="artist-hero-img" />
+        <img id="artist-hero-img" src="" alt="" class="artist-hero-img" onerror="onImgError(this)" />
 
         <div class="absolute inset-0 flex flex-col justify-between"
              style="padding: 2rem 2.5rem;">
@@ -484,11 +484,18 @@
   <script>
 
   // ──────────────────────────────────────────
-  // PLACEHOLDER  (no network required)
-  // Generates inline SVG data URIs so the site
-  // works when opened directly from file://.
-  // Replace these with real image paths in prod.
+  // IMAGE PLACEHOLDER
   // ──────────────────────────────────────────
+  const IMG_PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">' +
+    '<rect width="400" height="500" fill="#E8E4DC"/>' +
+    '<rect x="160" y="190" width="80" height="60" rx="2" fill="none" stroke="#C8C5BF" stroke-width="1.5"/>' +
+    '<circle cx="177" cy="208" r="9" fill="none" stroke="#C8C5BF" stroke-width="1.5"/>' +
+    '<path d="M160 245 L185 222 L205 238 L222 226 L240 245" fill="none" stroke="#C8C5BF" stroke-width="1.5"/>' +
+    '</svg>'
+  );
+  function onImgError(el) { el.onerror = null; el.src = IMG_PLACEHOLDER; }
+
   // ──────────────────────────────────────────
   // DATA — loaded from sculptors.json
   // ──────────────────────────────────────────
@@ -654,7 +661,7 @@
       ? `<video src="${w.video}" poster="${w.image}" muted loop preload="none"
                 style="display:block;width:100%;height:auto;transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94),filter 0.5s ease;filter:grayscale(20%);"
                 onmouseover="this.play()" onmouseout="this.pause()"></video>`
-      : `<img src="${w.image}" alt="${w.title}" loading="lazy"
+      : `<img src="${w.image}" alt="${w.title}" loading="lazy" onerror="onImgError(this)"
               style="display:block;width:100%;height:auto;transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94),filter 0.5s ease;filter:grayscale(20%);" />`;
 
     const videoBadge = isVid ? `
@@ -704,7 +711,7 @@
     document.getElementById('artists-list').innerHTML = DATA.artists.map((a, i) => `
       <div class="artist-card cursor-pointer" onclick="navigate('/artist/${a.id}')">
         <div style="overflow:hidden;margin-bottom:1rem;aspect-ratio:4/5;">
-          <img src="${a.avatar}" alt="${a.name}" class="artist-avatar" loading="lazy" />
+          <img src="${a.avatar}" alt="${a.name}" class="artist-avatar" loading="lazy" onerror="onImgError(this)" />
         </div>
         <div class="font-display" style="font-size:1.2rem;font-weight:300;margin-bottom:3px;">${a.name}</div>
         <div style="font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:#7A7770;margin-bottom:8px;">${a.city}</div>
