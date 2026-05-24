@@ -29,6 +29,16 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="stylesheet" href="style.css" />
+
+  <script type="application/ld+json" id="page-jsonld">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Lisculpt",
+    "description": "An international directory of contemporary sculptors and their work.",
+    "url": "https://lisculpt.app"
+  }
+  </script>
 </head>
 
 <body>
@@ -167,8 +177,7 @@
           <h2 class="font-display font-light" style="font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.04em;">
             Our Sculptors
           </h2>
-          <span style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#7A7770;">
-            — 5 Artists
+          <span id="artists-count" style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#7A7770;">
           </span>
         </div>
 
@@ -291,6 +300,74 @@
   <script>
 
   // ──────────────────────────────────────────
+  // SCHEMA.ORG JSON-LD
+  // ──────────────────────────────────────────
+  const SITE_URL = window.location.origin;
+
+  function setPageJsonLd(data) {
+    document.getElementById('page-jsonld').textContent = JSON.stringify(data, null, 2);
+  }
+
+  function setHomJsonLd() {
+    setPageJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Lisculpt',
+      description: 'An international directory of contemporary sculptors and their work.',
+      url: SITE_URL
+    });
+  }
+
+  function setArtistJsonLd(artist) {
+    const sameAs = [artist.instagram].filter(Boolean);
+    if (artist.wikidata_qid) sameAs.push('https://www.wikidata.org/wiki/' + artist.wikidata_qid);
+    if (artist.ulan_id)      sameAs.push('https://vocab.getty.edu/ulan/' + artist.ulan_id);
+    if (artist.viaf_id)      sameAs.push('https://viaf.org/viaf/' + artist.viaf_id);
+
+    const personNode = {
+      '@type': 'Person',
+      '@id': SITE_URL + '/#artist-' + artist.id,
+      name: artist.name,
+      url: SITE_URL + '/#/artist/' + artist.id,
+      description: artist.bio,
+      sameAs: sameAs.length ? sameAs : undefined
+    };
+    if (artist.nationality)  personNode.nationality = artist.nationality;
+    if (artist.birth_year)   personNode.birthDate   = String(artist.birth_year);
+    if (artist.death_year)   personNode.deathDate   = String(artist.death_year);
+
+    const artworkNodes = artist.artworks.map(w => {
+      const node = {
+        '@type': 'VisualArtwork',
+        name: w.title,
+        artform: 'Sculpture',
+        artMedium: w.material,
+        dateCreated: String(w.year),
+        image: w.image,
+        url: SITE_URL + '/#/artist/' + artist.id,
+        creator: { '@id': SITE_URL + '/#artist-' + artist.id }
+      };
+      if (w.material_aat_uri) node.material = w.material_aat_uri;
+      if (w.edition_size)     node.artEdition = String(w.edition_size);
+      if (w.width_cm)  node.width  = { '@type': 'Distance', name: w.width_cm  + ' cm' };
+      if (w.height_cm) node.height = { '@type': 'Distance', name: w.height_cm + ' cm' };
+      if (w.depth_cm)  node.depth  = { '@type': 'Distance', name: w.depth_cm  + ' cm' };
+      const extra = [];
+      if (w.edition_number) extra.push({ '@type': 'PropertyValue', name: 'edition_number', value: w.edition_number });
+      if (w.foundry)        extra.push({ '@type': 'PropertyValue', name: 'foundry',        value: w.foundry });
+      if (w.cast_date)      extra.push({ '@type': 'PropertyValue', name: 'cast_date',      value: String(w.cast_date) });
+      if (w.patination)     extra.push({ '@type': 'PropertyValue', name: 'patination',     value: w.patination });
+      if (extra.length) node.additionalProperty = extra;
+      return node;
+    });
+
+    setPageJsonLd({
+      '@context': 'https://schema.org',
+      '@graph': [personNode, ...artworkNodes]
+    });
+  }
+
+  // ──────────────────────────────────────────
   // IMAGE PLACEHOLDER
   // ──────────────────────────────────────────
   const IMG_PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(
@@ -358,6 +435,7 @@
     document.getElementById('view-artist').classList.add('hidden');
     window.scrollTo({ top: 0 });
 
+    setHomJsonLd();
     const featured = DATA.artists.find(a => a.featured);
     renderHero(featured);
     renderFilters();
@@ -515,6 +593,8 @@
   // ARTISTS LIST
   // ──────────────────────────────────────────
   function renderArtistsList() {
+    const n = DATA.artists.length;
+    document.getElementById('artists-count').textContent = `— ${n} Artist${n !== 1 ? 's' : ''}`;
     document.getElementById('artists-list').innerHTML = DATA.artists.map((a, i) => `
       <div class="artist-card cursor-pointer" onclick="navigate('/artist/${a.id}')">
         <div style="overflow:hidden;margin-bottom:1rem;aspect-ratio:4/5;">
@@ -539,6 +619,7 @@
     document.getElementById('view-home').classList.add('hidden');
     document.getElementById('view-artist').classList.remove('hidden');
     window.scrollTo({ top: 0 });
+    setArtistJsonLd(artist);
 
     // Hero
     document.getElementById('artist-hero-img').src          = artist.artworks[0].image;
