@@ -1,0 +1,5 @@
+output/*.json
+cache/*.csv
+cache/*.json
+__pycache__/
+*.pyc

@@ -1,0 +1,22 @@
+[
+  {"name": "Kiki Smith",            "known_qid": "Q447300",   "instagram": "kikismith_artist",  "notes": "American, b.1954, figurative/body"},
+  {"name": "Thomas Houseago",       "known_qid": "Q2424825",  "instagram": null,                "notes": "British, b.1972, large-scale figurative"},
+  {"name": "Ibrahim Mahama",        "known_qid": "Q19800726", "instagram": null,                "notes": "Ghanaian, b.1987, assemblage/textile"},
+  {"name": "Do Ho Suh",             "known_qid": "Q3033213",  "instagram": null,                "notes": "Korean/American, b.1962, fabric architecture"},
+  {"name": "Arlene Shechet",        "known_qid": "Q19509449", "instagram": "arleneshechet",     "notes": "American ceramicist, b.1951"},
+  {"name": "Roxy Paine",            "known_qid": "Q6032604",  "instagram": null,                "notes": "American, b.1966, Dendroid series"},
+  {"name": "Huma Bhabha",           "known_qid": "Q5936654",  "instagram": null,                "notes": "Pakistani/American, b.1962, figurative mixed media"},
+  {"name": "Ursula von Rydingsvard","known_qid": "Q7901287",  "instagram": null,                "notes": "American, b.1942, monumental cedar sculpture"},
+  {"name": "Mark Manders",          "known_qid": "Q826213",   "instagram": null,                "notes": "Dutch, b.1968, conceptual figurative"},
+  {"name": "Nairy Baghramian",      "known_qid": "Q1963864",  "instagram": null,                "notes": "Iranian/German, b.1971, abstract installation"},
+  {"name": "Alicja Kwade",          "known_qid": "Q1578729",  "instagram": null,                "notes": "Polish/German, b.1979, conceptual/materials"},
+  {"name": "Theaster Gates",        "known_qid": "Q7777257",  "instagram": null,                "notes": "American, b.1973, ceramics/social practice"},
+  {"name": "Bharti Kher",           "known_qid": "Q2900658",  "instagram": null,                "notes": "British/Indian, b.1969, bindi sculptures"},
+  {"name": "Petrit Halilaj",        "known_qid": "Q17227429", "instagram": null,                "notes": "Kosovar, b.1986, narrative installation"},
+  {"name": "Carlos Bunga",          "known_qid": "Q19998132", "instagram": null,                "notes": "Portuguese, b.1976, cardboard/architecture"},
+  {"name": "Mona Hatoum",           "known_qid": "Q273696",   "instagram": null,                "notes": "Palestinian/British, b.1952, body/politics"},
+  {"name": "Toshiko Takaezu",       "known_qid": "Q7827716",  "instagram": null,                "living": false, "notes": "American ceramicist, 1922-2011"},
+  {"name": "Simone Leigh",          "known_qid": "Q16200002", "instagram": null,                "notes": "American, b.1967, Black female figure/ceramics"},
+  {"name": "Leilah Babirye",        "known_qid": "Q43387704", "instagram": null,                "notes": "Ugandan, b.1985, ceramic figurative"},
+  {"name": "Bosco Sodi",            "known_qid": "Q4947173",  "instagram": null,                "notes": "Mexican, b.1970, textured clay/pigment"}
+]
