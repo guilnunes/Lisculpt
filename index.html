@@ -516,7 +516,9 @@
   // DATA HELPERS
   // ──────────────────────────────────────────
   function getAllArtworks() {
-    return DATA.artists.flatMap(a => a.artworks.map(w => ({ ...w, artist: a })));
+    return DATA.artists
+      .filter(a => a.artworks.length > 0)
+      .map(a => ({ ...a.artworks[0], artist: a }));
   }
 
   function getFiltered() {
