@@ -290,6 +290,107 @@
   </div><!-- /view-artist -->
 
 
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║           ARTWORK VIEW              ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="view-artwork" class="hidden">
+
+    <!-- Hero -->
+    <div style="padding-top: 52px;">
+      <div class="relative">
+        <img id="artwork-hero-img" src="" alt="" class="artist-hero-img" onerror="onImgError(this)" />
+
+        <div class="absolute inset-0 flex flex-col justify-between"
+             style="padding: 2rem 2.5rem;">
+
+          <!-- Back button -->
+          <div>
+            <button id="artwork-back-btn"
+                    style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.6); background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; transition:color 0.2s;"
+                    onmouseover="this.style.color='rgba(255,255,255,0.95)'"
+                    onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5"/>
+              </svg>
+              Back to <span id="artwork-back-label"></span>
+            </button>
+          </div>
+
+          <!-- Title + tags -->
+          <div>
+            <div id="artwork-page-tags" class="flex gap-2 mb-5"></div>
+            <h1 id="artwork-page-title"
+                class="font-display text-white font-light leading-none mb-3"
+                style="font-size: clamp(3rem, 8vw, 7.5rem);">
+            </h1>
+            <p id="artwork-page-meta"
+               style="font-family:'Syne',sans-serif; font-size:0.7rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.5);">
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Description + Details -->
+    <div class="max-w-screen-xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-16"
+         style="border-bottom: 1px solid #C8C5BF;">
+
+      <div class="md:col-span-2">
+        <p id="artwork-page-description"
+           class="font-display font-light leading-relaxed"
+           style="font-size: 1.25rem; color: rgba(13,13,13,0.78);">
+        </p>
+
+        <div id="artwork-artist-credit"
+             class="flex items-center gap-4 mt-12 cursor-pointer">
+          <img id="artwork-artist-avatar" src="" alt=""
+               style="width:52px;height:52px;border-radius:9999px;object-fit:cover;border:1px solid #C8C5BF;display:block;"
+               onerror="this.style.display='none'" />
+          <div>
+            <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.25rem;">Sculpted by</div>
+            <div id="artwork-artist-name" class="font-display font-light" style="font-size:1.4rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-10">
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Year</div>
+          <div id="artwork-page-year" class="font-display font-light" style="font-size:2.25rem; line-height:1;"></div>
+        </div>
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Material</div>
+          <div id="artwork-page-material" class="font-display font-light" style="font-size:1.2rem;"></div>
+        </div>
+        <div id="artwork-dimensions-block">
+          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Dimensions</div>
+          <div id="artwork-page-dimensions" class="font-display font-light" style="font-size:1.2rem;"></div>
+        </div>
+        <div id="artwork-edition-block">
+          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Edition</div>
+          <div id="artwork-page-edition" class="font-display font-light" style="font-size:1.2rem;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- More by this artist -->
+    <div class="px-1.5 py-1.5 mt-0">
+      <div class="max-w-screen-2xl mx-auto">
+        <div style="padding: 2.5rem 1.5rem 1.5rem;">
+          <h2 class="font-display font-light"
+              style="font-size:1.75rem; letter-spacing:0.05em; border-bottom:1px solid #C8C5BF; padding-bottom:1rem;">
+            More by <span id="artwork-more-artist-name"></span>
+          </h2>
+        </div>
+        <div id="artwork-more-grid" class="masonry px-0 pt-0"></div>
+      </div>
+    </div>
+
+  </div><!-- /view-artwork -->
+
+
   <!-- Footer -->
   <footer style="border-top: 1px solid #C8C5BF; margin-top: 4rem;">
     <div class="max-w-screen-xl mx-auto px-8 py-10 flex items-center justify-between">
@@ -376,6 +477,40 @@
     });
   }
 
+  function setArtworkJsonLd(artist, artwork) {
+    const node = {
+      '@context': 'https://schema.org',
+      '@type': 'VisualArtwork',
+      name: artwork.title,
+      artform: 'Sculpture',
+      artMedium: artwork.material,
+      dateCreated: String(artwork.year),
+      image: artwork.image,
+      description: artwork.description || undefined,
+      url: SITE_URL + '/#/artist/' + artist.id + '/' + slugify(artwork.title),
+      creator: {
+        '@type': 'Person',
+        '@id': SITE_URL + '/#artist-' + artist.id,
+        name: artist.name
+      }
+    };
+    if (artwork.material_aat_uri)  node.material   = artwork.material_aat_uri;
+    if (artwork.technique_aat_uri) node.technique  = artwork.technique_aat_uri;
+    if (artwork.edition_size)      node.artEdition = String(artwork.edition_size);
+    if (artwork.width_cm)  node.width  = { '@type': 'Distance', name: artwork.width_cm  + ' cm' };
+    if (artwork.height_cm) node.height = { '@type': 'Distance', name: artwork.height_cm + ' cm' };
+    if (artwork.depth_cm)  node.depth  = { '@type': 'Distance', name: artwork.depth_cm  + ' cm' };
+
+    const extra = [];
+    if (artwork.edition_number) extra.push({ '@type': 'PropertyValue', name: 'edition_number', value: artwork.edition_number });
+    if (artwork.foundry)        extra.push({ '@type': 'PropertyValue', name: 'foundry',        value: artwork.foundry });
+    if (artwork.cast_date)      extra.push({ '@type': 'PropertyValue', name: 'cast_date',      value: String(artwork.cast_date) });
+    if (artwork.patination)     extra.push({ '@type': 'PropertyValue', name: 'patination',     value: artwork.patination });
+    if (extra.length) node.additionalProperty = extra;
+
+    setPageJsonLd(node);
+  }
+
   // ──────────────────────────────────────────
   // IMAGE PLACEHOLDER
   // ──────────────────────────────────────────
@@ -413,12 +548,27 @@
     const path  = hash.slice(1); // remove leading #
     const parts = path.split('/').filter(Boolean);
 
-    if (parts[0] === 'artist' && parts[1]) {
+    if (parts[0] === 'artist' && parts[1] && parts[2]) {
+      showArtwork(parts[1], parts[2]);
+    } else if (parts[0] === 'artist' && parts[1]) {
       showArtist(parts[1]);
     } else {
       showHome();
     }
   }
+
+  // Turns an artwork title into a stable URL segment, e.g. "Work 01" -> "work-01"
+  function slugify(str) {
+    return String(str || '')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/[\s_]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  const LOREM_IPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.';
 
   window.addEventListener('hashchange', handleRoute);
 
@@ -442,6 +592,7 @@
   function showHome() {
     document.getElementById('view-home').classList.remove('hidden');
     document.getElementById('view-artist').classList.add('hidden');
+    document.getElementById('view-artwork').classList.add('hidden');
     window.scrollTo({ top: 0 });
 
     setHomJsonLd();
@@ -569,7 +720,7 @@
     return `
       <div class="masonry-item">
         <div class="artwork-card"
-             onclick="navigate('/artist/${w.artist.id}')"
+             onclick="navigate('/artist/${w.artist.id}/${slugify(w.title)}')"
              onmouseover="hoverCard(this,true)"
              onmouseout="hoverCard(this,false)">
           <div class="card-index">${num}</div>
@@ -629,6 +780,7 @@
 
     document.getElementById('view-home').classList.add('hidden');
     document.getElementById('view-artist').classList.remove('hidden');
+    document.getElementById('view-artwork').classList.add('hidden');
     window.scrollTo({ top: 0 });
     setArtistJsonLd(artist);
 
@@ -669,6 +821,84 @@
     // Works grid
     document.getElementById('artist-works-grid').innerHTML =
       artist.artworks.map((w, i) => cardHTML({ ...w, artist }, i)).join('');
+  }
+
+  // ──────────────────────────────────────────
+  // VIEW: ARTWORK
+  // ──────────────────────────────────────────
+  function showArtwork(artistId, artworkSlug) {
+    const artist = DATA.artists.find(a => a.id === artistId);
+    if (!artist) { navigate('/'); return; }
+
+    const artwork = artist.artworks.find(w => slugify(w.title) === artworkSlug);
+    if (!artwork) { navigate(`/artist/${artistId}`); return; }
+
+    document.getElementById('view-home').classList.add('hidden');
+    document.getElementById('view-artist').classList.add('hidden');
+    document.getElementById('view-artwork').classList.remove('hidden');
+    window.scrollTo({ top: 0 });
+    setArtworkJsonLd(artist, artwork);
+
+    // Hero
+    const heroImg = document.getElementById('artwork-hero-img');
+    heroImg.src = artwork.image;
+    heroImg.alt = artwork.title;
+
+    document.getElementById('artwork-back-btn').onclick = () => navigate(`/artist/${artist.id}`);
+    document.getElementById('artwork-back-label').textContent = artist.name;
+
+    document.getElementById('artwork-page-title').textContent = artwork.title;
+    document.getElementById('artwork-page-meta').textContent  = `${artist.name} · ${artwork.year}`;
+
+    // Tags — material & technique belong to the artwork, not the artist
+    const tags = [artwork.material, artwork.style].filter(Boolean);
+    document.getElementById('artwork-page-tags').innerHTML = tags
+      .map(t => `<span class="chip">${t}</span>`)
+      .join('');
+
+    document.getElementById('artwork-page-description').textContent = artwork.description || LOREM_IPSUM;
+
+    // Artist credit
+    document.getElementById('artwork-artist-credit').onclick = () => navigate(`/artist/${artist.id}`);
+    const avatarEl = document.getElementById('artwork-artist-avatar');
+    if (artist.avatar) {
+      avatarEl.src = artist.avatar;
+      avatarEl.alt = artist.name;
+      avatarEl.style.display = '';
+    } else {
+      avatarEl.style.display = 'none';
+    }
+    document.getElementById('artwork-artist-name').textContent = artist.name;
+
+    // Stats
+    document.getElementById('artwork-page-year').textContent     = artwork.year || '—';
+    document.getElementById('artwork-page-material').textContent = artwork.material || '—';
+
+    const dimsBlock = document.getElementById('artwork-dimensions-block');
+    if (artwork.width_cm || artwork.height_cm || artwork.depth_cm) {
+      dimsBlock.style.display = '';
+      document.getElementById('artwork-page-dimensions').textContent =
+        [artwork.width_cm, artwork.height_cm, artwork.depth_cm]
+          .map(d => d ? `${d}` : '?').join(' × ') + ' cm';
+    } else {
+      dimsBlock.style.display = 'none';
+    }
+
+    const editionBlock = document.getElementById('artwork-edition-block');
+    if (artwork.edition_size) {
+      editionBlock.style.display = '';
+      document.getElementById('artwork-page-edition').textContent = artwork.edition_number
+        ? `${artwork.edition_number} / ${artwork.edition_size}`
+        : `Edition of ${artwork.edition_size}`;
+    } else {
+      editionBlock.style.display = 'none';
+    }
+
+    // More by this artist
+    document.getElementById('artwork-more-artist-name').textContent = artist.name;
+    const others = artist.artworks.filter(w => w.id !== artwork.id);
+    document.getElementById('artwork-more-grid').innerHTML =
+      others.map((w, i) => cardHTML({ ...w, artist }, i)).join('');
   }
 
   </script>
