@@ -45,11 +45,15 @@
   <div style="width:320px;">
     <div style="font-size:1.4rem; letter-spacing:0.18em; margin-bottom:1.5rem; font-weight:500;">Lisculpt Admin</div>
     <div class="field">
-      <label>Password</label>
-      <input type="password" id="gate-pw" placeholder="Enter admin password" style="width:100%;" />
+      <label>Email</label>
+      <input type="email" id="gate-email" placeholder="admin@example.com" autocomplete="username" style="width:100%;" />
     </div>
-    <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="checkPassword()">Enter</button>
-    <p id="gate-err" style="color:#b91c1c; font-size:0.75rem; margin-top:8px; display:none;">Incorrect password.</p>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="gate-pw" placeholder="Password" autocomplete="current-password" style="width:100%;" />
+    </div>
+    <button class="btn btn-primary" id="gate-btn" style="width:100%; justify-content:center;" onclick="signIn()">Sign in</button>
+    <p id="gate-err" style="color:#b91c1c; font-size:0.75rem; margin-top:8px; display:none;"></p>
   </div>
 </div>
 
@@ -59,7 +63,10 @@
   <!-- Header -->
   <header style="background:#0D0D0D; padding:0 1.5rem; height:52px; display:flex; align-items:center; justify-content:space-between;">
     <span style="color:#F2EFE9; font-size:1rem; letter-spacing:0.2em; font-weight:500;">LISCULPT ADMIN</span>
-    <a href="/" style="color:rgba(255,255,255,0.5); font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none;">← Public Site</a>
+    <div style="display:flex; gap:1.5rem; align-items:center;">
+      <a href="/" style="color:rgba(255,255,255,0.5); font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none;">← Public Site</a>
+      <button onclick="signOut()" style="background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.5); font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase;">Sign out</button>
+    </div>
   </header>
 
   <!-- Toolbar -->
@@ -225,23 +232,56 @@
 <script>
   const SUPABASE_URL  = 'https://bhkggorcvcpnttbztdod.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJoa2dnb3JjdmNwbnR0Ynp0ZG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NDk1NzUsImV4cCI6MjA5ODEyNTU3NX0.UHv1ysY33NrIfxkF610TlHL47xcPdieX1F5eSfvsu-M';
-  const ADMIN_PASSWORD = 'lisculpt2025';
 
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  // ── Auth gate ──────────────────────────────
-  function checkPassword() {
-    const pw = document.getElementById('gate-pw').value;
-    if (pw === ADMIN_PASSWORD) {
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('app').classList.remove('hidden');
-      loadArtists();
-    } else {
-      document.getElementById('gate-err').style.display = 'block';
-    }
+  // ── Auth gate (Supabase Auth) ──────────────
+  function showApp() {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').classList.remove('hidden');
+    loadArtists();
   }
+  function showGate() {
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('gate').style.display = '';
+  }
+
+  async function signIn() {
+    const email = document.getElementById('gate-email').value.trim();
+    const password = document.getElementById('gate-pw').value;
+    const err = document.getElementById('gate-err');
+    const btn = document.getElementById('gate-btn');
+    err.style.display = 'none';
+    btn.textContent = 'Signing in…';
+    btn.disabled = true;
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+
+    btn.textContent = 'Sign in';
+    btn.disabled = false;
+    if (error) {
+      err.textContent = error.message || 'Sign in failed.';
+      err.style.display = 'block';
+      return;
+    }
+    showApp();
+  }
+
+  async function signOut() {
+    await sb.auth.signOut();
+    showGate();
+  }
+
   document.getElementById('gate-pw').addEventListener('keydown', e => {
-    if (e.key === 'Enter') checkPassword();
+    if (e.key === 'Enter') signIn();
+  });
+  document.getElementById('gate-email').addEventListener('keydown', e => {
+    if (e.key === 'Enter') signIn();
+  });
+
+  // Resume an existing session on load
+  sb.auth.getSession().then(({ data }) => {
+    if (data.session) showApp();
   });
 
   // ── Data ──────────────────────────────────
