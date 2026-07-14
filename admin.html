@@ -227,6 +227,110 @@
   </div>
 </div>
 
+<!-- ARTWORK GALLERY -->
+<div id="gallery-modal" class="modal-backdrop hidden" onclick="closeGalleryOnBackdrop(event)">
+  <div class="modal" style="width:min(880px,94vw);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+      <h2 id="gallery-title" style="font-size:1rem; font-weight:600; letter-spacing:0.08em;"></h2>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn btn-primary" onclick="openArtworkModal(null)">+ New Artwork</button>
+        <button onclick="closeGallery()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#7A7770;">✕</button>
+      </div>
+    </div>
+    <div id="gallery-body"></div>
+    <div id="gallery-empty" style="display:none; padding:2.5rem; text-align:center; color:#7A7770; font-size:0.9rem;">No artworks yet.</div>
+  </div>
+</div>
+
+<!-- ARTWORK EDIT / CREATE -->
+<div id="artwork-modal" class="modal-backdrop hidden" onclick="closeArtworkOnBackdrop(event)">
+  <div class="modal">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+      <h2 id="artwork-modal-title" style="font-size:1rem; font-weight:600; letter-spacing:0.08em;"></h2>
+      <button onclick="closeArtworkModal()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#7A7770;">✕</button>
+    </div>
+    <form id="artwork-form" onsubmit="saveArtwork(event)">
+      <input type="hidden" id="w-id" />
+      <input type="hidden" id="w-artist-id" />
+
+      <div class="grid2">
+        <div class="field"><label>Title *</label><input type="text" id="w-title" required /></div>
+        <div class="field"><label>Year</label><input type="number" id="w-year" min="0" max="2100" /></div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Material</label>
+          <input type="text" id="w-material" list="material-list" oninput="onMaterialInput()" />
+          <datalist id="material-list"></datalist>
+        </div>
+        <div class="field"><label>Style</label><input type="text" id="w-style" /></div>
+      </div>
+      <div class="field"><label>Image URL</label><input type="text" id="w-image" /></div>
+      <div class="field"><label>Video URL</label><input type="text" id="w-video" /></div>
+      <div class="field"><label>Description</label><textarea id="w-description"></textarea></div>
+
+      <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin:0.5rem 0;border-top:1px solid #C8C5BF;padding-top:1rem;">Dimensions</div>
+      <div class="grid2">
+        <div class="field"><label>Width (cm)</label><input type="number" step="0.1" id="w-width" /></div>
+        <div class="field"><label>Height (cm)</label><input type="number" step="0.1" id="w-height" /></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Depth (cm)</label><input type="number" step="0.1" id="w-depth" /></div>
+        <div class="field"><label>Weight (kg)</label><input type="number" step="0.1" id="w-weight" /></div>
+      </div>
+      <div class="field"><label>Base Height (cm)</label><input type="number" step="0.1" id="w-base-height" style="width:120px;" /></div>
+
+      <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin:0.5rem 0;border-top:1px solid #C8C5BF;padding-top:1rem;">Edition &amp; Casting</div>
+      <div class="grid2">
+        <div class="field"><label>Edition Number (e.g. 3/8)</label><input type="text" id="w-edition-number" /></div>
+        <div class="field"><label>Edition Size</label><input type="number" id="w-edition-size" /></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Foundry</label><input type="text" id="w-foundry" /></div>
+        <div class="field"><label>Patination</label><input type="text" id="w-patination" /></div>
+      </div>
+      <div class="field"><label>Cast Date (year)</label><input type="number" id="w-cast-date" min="0" max="2100" style="width:120px;" /></div>
+
+      <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin:0.5rem 0;border-top:1px solid #C8C5BF;padding-top:1rem;">Taxonomy (Getty AAT)</div>
+      <div class="field">
+        <label>Material AAT URI <span style="text-transform:none;letter-spacing:0;color:#9a978f;">— auto-filled from material</span></label>
+        <input type="text" id="w-material-aat" placeholder="http://vocab.getty.edu/aat/…" />
+      </div>
+      <div class="field"><label>Technique AAT URI</label><input type="text" id="w-technique-aat" placeholder="http://vocab.getty.edu/aat/…" /></div>
+
+      <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin:0.5rem 0;border-top:1px solid #C8C5BF;padding-top:1rem;">Governance &amp; 3D</div>
+      <div class="grid2">
+        <div class="field"><label>Location Country</label><input type="text" id="w-location-country" /></div>
+        <div class="field"><label>License</label><input type="text" id="w-license" /></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Wikidata QID</label><input type="text" id="w-wikidata" placeholder="Q12345" /></div>
+        <div class="field"><label>3D Model Format</label><input type="text" id="w-model-format" placeholder="GLB / USDZ" /></div>
+      </div>
+      <div class="field"><label>3D Model URL</label><input type="text" id="w-model-url" /></div>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-top:1.5rem; border-top:1px solid #C8C5BF; padding-top:1.25rem;">
+        <button type="button" class="btn btn-danger" id="w-delete-btn" style="display:none;" onclick="openArtworkConfirm()">Delete</button>
+        <div style="display:flex; gap:10px; margin-left:auto;">
+          <button type="button" class="btn btn-ghost" onclick="closeArtworkModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="w-save-btn">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ARTWORK CONFIRM DELETE -->
+<div id="artwork-confirm" class="modal-backdrop hidden">
+  <div class="modal" style="width:min(400px,90vw); max-height:unset;">
+    <p style="font-size:0.9rem; margin-bottom:1.5rem;">Delete <strong id="artwork-confirm-name"></strong>? This cannot be undone.</p>
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn btn-ghost" onclick="closeArtworkConfirm()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDeleteArtwork()">Delete</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -338,7 +442,9 @@
         <td>${a.city || '—'}</td>
         <td>${a.birth_year || '—'}</td>
         <td>${a.rating ?? '—'}</td>
-        <td style="text-align:center;">${artworkCounts[a.id] || 0}</td>
+        <td style="text-align:center;">
+          <button class="btn btn-ghost" style="padding:4px 10px;" onclick="openGallery('${a.id}')">${artworkCounts[a.id] || 0} works</button>
+        </td>
         <td>
           <label class="toggle" title="${a.published ? 'Published — click to unpublish' : 'Unpublished — click to publish'}">
             <input type="checkbox" ${a.published ? 'checked' : ''} onchange="togglePublished('${a.id}', this.checked)" />
@@ -489,6 +595,206 @@
     if (error) { toast('Delete failed: ' + error.message, true); return; }
     toast('Artist deleted');
     loadArtists();
+  }
+
+  // ── Artwork gallery & CRUD ────────────────
+  // Getty AAT material map (research doc / lisculpt-schema-update-2026-05)
+  const AAT_MATERIAL_MAP = {
+    'bronze':   'http://vocab.getty.edu/aat/300010957',
+    'clay':     'http://vocab.getty.edu/aat/300010439',
+    'marble':   'http://vocab.getty.edu/aat/300011443',
+    'stone':    'http://vocab.getty.edu/aat/300011176',
+    'ceramics': 'http://vocab.getty.edu/aat/300010660',
+    'wood':     'http://vocab.getty.edu/aat/300011914',
+    'glass':    'http://vocab.getty.edu/aat/300010797',
+  };
+
+  let galleryArtistId = null;
+  let galleryWorks = [];
+  let pendingArtworkDeleteId = null;
+
+  function aatFor(material) {
+    if (!material) return null;
+    return AAT_MATERIAL_MAP[material.trim().toLowerCase()] || null;
+  }
+
+  async function openGallery(artistId) {
+    galleryArtistId = artistId;
+    const a = ARTISTS.find(x => x.id === artistId);
+    document.getElementById('gallery-title').textContent = a ? `${a.name} — Artworks` : 'Artworks';
+    document.getElementById('material-list').innerHTML =
+      Object.keys(AAT_MATERIAL_MAP)
+        .map(m => `<option value="${m.charAt(0).toUpperCase() + m.slice(1)}">`).join('');
+    document.getElementById('gallery-modal').classList.remove('hidden');
+    await loadGallery();
+  }
+
+  async function loadGallery() {
+    const { data, error } = await sb
+      .from('artworks')
+      .select('*')
+      .eq('artist_id', galleryArtistId)
+      .order('sort_order', { ascending: true, nullsFirst: false })
+      .order('id', { ascending: true });
+    if (error) { toast('Failed to load artworks', true); return; }
+    galleryWorks = data || [];
+    renderGallery();
+  }
+
+  function renderGallery() {
+    const body  = document.getElementById('gallery-body');
+    const empty = document.getElementById('gallery-empty');
+    if (!galleryWorks.length) { body.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+    body.innerHTML =
+      `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:1rem;">` +
+      galleryWorks.map(w => `
+        <div style="border:1px solid #C8C5BF; border-radius:6px; overflow:hidden; background:#fff;">
+          <div style="aspect-ratio:1; background:#EEEBE5; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            ${w.image
+              ? `<img src="${w.image}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'" />`
+              : `<span style="color:#B0ADA6;font-size:0.7rem;">no image</span>`}
+          </div>
+          <div style="padding:0.6rem 0.75rem;">
+            <div style="font-weight:500; font-size:0.82rem;">${w.title || '—'}</div>
+            <div style="font-size:0.7rem; color:#7A7770; margin-top:2px;">${[w.material, w.year].filter(Boolean).join(' · ') || '—'}</div>
+            <div style="font-size:0.6rem; color:${w.material_aat_uri ? '#3f7a3f' : '#b08a3f'}; margin-top:3px;">${w.material_aat_uri ? 'AAT ✓' : 'AAT —'}</div>
+            <button class="btn btn-ghost" style="padding:4px 10px; margin-top:0.6rem;" onclick="openArtworkModal('${w.id}')">Edit</button>
+          </div>
+        </div>
+      `).join('') + `</div>`;
+  }
+
+  function closeGallery() { document.getElementById('gallery-modal').classList.add('hidden'); loadArtists(); }
+  function closeGalleryOnBackdrop(e) { if (e.target === document.getElementById('gallery-modal')) closeGallery(); }
+
+  function nextArtworkId() {
+    let max = 0;
+    galleryWorks.forEach(w => {
+      const m = /-(\d+)$/.exec(w.id);
+      if (m) max = Math.max(max, parseInt(m[1], 10));
+    });
+    return `${galleryArtistId}-${String(max + 1).padStart(2, '0')}`;
+  }
+
+  function setV(id, val) {
+    document.getElementById(id).value = (val === null || val === undefined) ? '' : val;
+  }
+
+  function openArtworkModal(id) {
+    const w = id ? galleryWorks.find(x => x.id === id) : null;
+    document.getElementById('artwork-modal-title').textContent = w ? `Edit — ${w.title || w.id}` : 'New Artwork';
+    document.getElementById('w-id').value = w ? w.id : '';
+    document.getElementById('w-artist-id').value = galleryArtistId;
+    setV('w-title', w && w.title);
+    setV('w-year', w && w.year);
+    setV('w-material', w && w.material);
+    setV('w-style', w && w.style);
+    setV('w-image', w && w.image);
+    setV('w-video', w && w.video);
+    setV('w-description', w && w.description);
+    setV('w-width', w && w.width_cm);
+    setV('w-height', w && w.height_cm);
+    setV('w-depth', w && w.depth_cm);
+    setV('w-weight', w && w.weight_kg);
+    setV('w-base-height', w && w.base_height_cm);
+    setV('w-edition-number', w && w.edition_number);
+    setV('w-edition-size', w && w.edition_size);
+    setV('w-foundry', w && w.foundry);
+    setV('w-patination', w && w.patination);
+    setV('w-cast-date', w && w.cast_date);
+    setV('w-material-aat', w && w.material_aat_uri);
+    setV('w-technique-aat', w && w.technique_aat_uri);
+    setV('w-location-country', w && w.location_country);
+    setV('w-license', w && w.license);
+    setV('w-wikidata', w && w.wikidata_qid);
+    setV('w-model-format', w && w.model_3d_format);
+    setV('w-model-url', w && w.model_3d_url);
+    document.getElementById('w-delete-btn').style.display = w ? '' : 'none';
+    document.getElementById('artwork-modal').classList.remove('hidden');
+  }
+
+  // Auto-fill the AAT URI from the material, unless the user typed a custom one
+  function onMaterialInput() {
+    const mat  = document.getElementById('w-material').value;
+    const aatEl = document.getElementById('w-material-aat');
+    const mapped  = aatFor(mat);
+    const current = aatEl.value.trim();
+    const isMappedValue = Object.values(AAT_MATERIAL_MAP).includes(current);
+    if (mapped && (!current || isMappedValue)) aatEl.value = mapped;
+  }
+
+  function closeArtworkModal() { document.getElementById('artwork-modal').classList.add('hidden'); }
+  function closeArtworkOnBackdrop(e) { if (e.target === document.getElementById('artwork-modal')) closeArtworkModal(); }
+
+  function numOrNull(id) { const v = document.getElementById(id).value; return v === '' ? null : Number(v); }
+  function txtOrNull(id) { const v = document.getElementById(id).value.trim(); return v || null; }
+
+  async function saveArtwork(e) {
+    e.preventDefault();
+    const isNew    = !document.getElementById('w-id').value;
+    const material = txtOrNull('w-material');
+    let materialAat = txtOrNull('w-material-aat');
+    if (!materialAat) materialAat = aatFor(material);   // auto-populate per research spec
+
+    const id = isNew ? nextArtworkId() : document.getElementById('w-id').value;
+    const payload = {
+      id,
+      artist_id:         document.getElementById('w-artist-id').value,
+      title:             txtOrNull('w-title'),
+      year:              numOrNull('w-year'),
+      material,
+      style:             txtOrNull('w-style'),
+      image:             txtOrNull('w-image'),
+      video:             txtOrNull('w-video'),
+      description:       document.getElementById('w-description').value.trim(),
+      width_cm:          numOrNull('w-width'),
+      height_cm:         numOrNull('w-height'),
+      depth_cm:          numOrNull('w-depth'),
+      weight_kg:         numOrNull('w-weight'),
+      base_height_cm:    numOrNull('w-base-height'),
+      edition_number:    txtOrNull('w-edition-number'),
+      edition_size:      numOrNull('w-edition-size'),
+      foundry:           txtOrNull('w-foundry'),
+      patination:        txtOrNull('w-patination'),
+      cast_date:         numOrNull('w-cast-date'),
+      material_aat_uri:  materialAat,
+      technique_aat_uri: txtOrNull('w-technique-aat'),
+      location_country:  txtOrNull('w-location-country'),
+      license:           txtOrNull('w-license'),
+      wikidata_qid:      txtOrNull('w-wikidata'),
+      model_3d_format:   txtOrNull('w-model-format'),
+      model_3d_url:      txtOrNull('w-model-url'),
+    };
+
+    const btn = document.getElementById('w-save-btn');
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    let error;
+    if (isNew) ({ error } = await sb.from('artworks').insert(payload));
+    else       ({ error } = await sb.from('artworks').update(payload).eq('id', document.getElementById('w-id').value));
+    btn.textContent = 'Save'; btn.disabled = false;
+
+    if (error) { toast('Save failed: ' + error.message, true); return; }
+    toast(isNew ? 'Artwork created' : 'Artwork updated');
+    closeArtworkModal();
+    await loadGallery();
+  }
+
+  function openArtworkConfirm() {
+    pendingArtworkDeleteId = document.getElementById('w-id').value;
+    document.getElementById('artwork-confirm-name').textContent =
+      document.getElementById('w-title').value || pendingArtworkDeleteId;
+    document.getElementById('artwork-confirm').classList.remove('hidden');
+  }
+  function closeArtworkConfirm() { pendingArtworkDeleteId = null; document.getElementById('artwork-confirm').classList.add('hidden'); }
+  async function confirmDeleteArtwork() {
+    if (!pendingArtworkDeleteId) return;
+    const { error } = await sb.from('artworks').delete().eq('id', pendingArtworkDeleteId);
+    closeArtworkConfirm();
+    if (error) { toast('Delete failed: ' + error.message, true); return; }
+    closeArtworkModal();
+    toast('Artwork deleted');
+    await loadGallery();
   }
 
   // ── Toast ─────────────────────────────────
