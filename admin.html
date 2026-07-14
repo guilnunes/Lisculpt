@@ -69,6 +69,15 @@
     </div>
   </header>
 
+  <!-- Scheduled jobs -->
+  <div style="padding:1.25rem 1.5rem; border-bottom:1px solid #C8C5BF;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
+      <span style="font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#7A7770;">Scheduled Jobs</span>
+      <button class="btn btn-ghost" style="padding:2px 10px;" onclick="loadCronJobs()">Refresh</button>
+    </div>
+    <div id="cron-list" style="display:grid; gap:8px;"></div>
+  </div>
+
   <!-- Toolbar -->
   <div style="padding:1.25rem 1.5rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #C8C5BF;">
     <div>
@@ -372,6 +381,58 @@
     document.getElementById('gate').style.display = 'none';
     document.getElementById('app').classList.remove('hidden');
     loadArtists();
+    loadCronJobs();
+  }
+
+  // ── Scheduled jobs panel ──────────────────
+  function cronHuman(expr) {
+    const map = { '0 3 * * 0': 'Sundays 03:00 UTC', '0 4 * * 3': 'Wednesdays 04:00 UTC' };
+    return map[expr] || expr;
+  }
+
+  async function loadCronJobs() {
+    const el = document.getElementById('cron-list');
+    el.innerHTML = '<span style="font-size:0.8rem;color:#7A7770;">Loading…</span>';
+    const items = [];
+
+    // Supabase pg_cron — live from the database
+    const { data, error } = await sb.rpc('admin_cron_jobs');
+    if (error) {
+      items.push({ where: 'Supabase pg_cron', name: '(could not load jobs)', schedule: error.message, active: null, status: '' });
+    } else {
+      (data || []).forEach(j => items.push({
+        where: 'Supabase pg_cron',
+        name: j.jobname,
+        schedule: `${cronHuman(j.schedule)} · ${j.schedule}`,
+        active: j.active,
+        status: j.last_run ? `last: ${j.last_status} · ${new Date(j.last_run).toLocaleString()}` : 'not run yet',
+      }));
+    }
+
+    // GitHub Actions — external to the DB, listed statically
+    items.push({
+      where: 'GitHub Actions',
+      name: 'media-cleanup (backup trigger)',
+      schedule: `${cronHuman('0 4 * * 3')} · 0 4 * * 3`,
+      active: true,
+      status: 'view runs ↗',
+      link: 'https://github.com/guilnunes/Lisculpt/actions',
+    });
+
+    el.innerHTML = items.map(it => `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 12px; border:1px solid #E8E4DC; border-radius:6px; background:#fff;">
+        <div style="min-width:0;">
+          <div style="font-weight:500; font-size:0.85rem;">${it.name}
+            <span style="margin-left:6px; font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:#7A7770;">${it.where}</span>
+          </div>
+          <div style="font-size:0.72rem; color:#7A7770; margin-top:2px;">${it.schedule}</div>
+        </div>
+        <div style="text-align:right; white-space:nowrap;">
+          ${it.active === null ? '' : `<span style="display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.6rem; letter-spacing:0.06em; background:${it.active ? '#DCEBD6' : '#EDE3C3'}; color:${it.active ? '#2f6a2f' : '#8a6d1f'};">${it.active ? 'active' : 'paused'}</span>`}
+          <div style="font-size:0.68rem; color:#7A7770; margin-top:3px;">${it.link ? `<a href="${it.link}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${it.status}</a>` : it.status}</div>
+        </div>
+      </div>
+    `).join('');
   }
   function showGate() {
     document.getElementById('app').classList.add('hidden');
