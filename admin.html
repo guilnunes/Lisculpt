@@ -165,8 +165,17 @@
       </div>
 
       <div class="field">
-        <label>Avatar URL</label>
-        <input type="text" id="f-avatar" />
+        <label>Avatar (profile picture)</label>
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <img id="f-avatar-preview" alt="" style="width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid #C8C5BF;background:#EEEBE5;display:none;" onerror="this.style.display='none'" />
+          <div style="flex:1;">
+            <input type="text" id="f-avatar" placeholder="https://…  or upload a file →" oninput="updateAvatarPreview()" />
+            <div style="margin-top:6px; display:flex; gap:8px; align-items:center;">
+              <input type="file" id="f-avatar-file" accept="image/*" style="font-size:0.72rem;" onchange="uploadAvatar(event)" />
+              <span id="f-avatar-status" style="font-size:0.7rem; color:#7A7770;"></span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="grid2">
@@ -265,7 +274,19 @@
         </div>
         <div class="field"><label>Style</label><input type="text" id="w-style" /></div>
       </div>
-      <div class="field"><label>Image URL</label><input type="text" id="w-image" /></div>
+      <div class="field">
+        <label>Image</label>
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <img id="w-image-preview" alt="" style="width:64px;height:64px;border-radius:6px;object-fit:cover;border:1px solid #C8C5BF;background:#EEEBE5;display:none;" onerror="this.style.display='none'" />
+          <div style="flex:1;">
+            <input type="text" id="w-image" placeholder="https://…  or upload a file →" oninput="updateArtworkPreview()" />
+            <div style="margin-top:6px; display:flex; gap:8px; align-items:center;">
+              <input type="file" id="w-image-file" accept="image/*" style="font-size:0.72rem;" onchange="uploadArtworkImage(event)" />
+              <span id="w-image-status" style="font-size:0.7rem; color:#7A7770;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="field"><label>Video URL</label><input type="text" id="w-video" /></div>
       <div class="field"><label>Description</label><textarea id="w-description"></textarea></div>
 
@@ -512,6 +533,8 @@
     document.getElementById('f-featured').checked  = a ? !!a.featured : false;
     document.getElementById('f-living').checked    = a ? !!a.living : true;
     document.getElementById('f-rating').value      = a ? (a.rating || '') : '';
+    resetAvatarUpload();
+    updateAvatarPreview();
     document.getElementById('modal').classList.remove('hidden');
   }
 
@@ -719,6 +742,8 @@
     setV('w-model-format', w && w.model_3d_format);
     setV('w-model-url', w && w.model_3d_url);
     document.getElementById('w-delete-btn').style.display = w ? '' : 'none';
+    resetArtworkUpload();
+    updateArtworkPreview();
     document.getElementById('artwork-modal').classList.remove('hidden');
   }
 
@@ -804,6 +829,65 @@
     closeArtworkModal();
     toast('Artwork deleted');
     await loadGallery();
+  }
+
+  // ── Image upload (Supabase Storage: "media") ──
+  const MEDIA_BUCKET = 'media';
+
+  function extOf(file) {
+    const e = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    return /^[a-z0-9]{1,5}$/.test(e) ? e : 'jpg';
+  }
+
+  async function uploadToMedia(file, path, statusEl) {
+    statusEl.textContent = 'Uploading…';
+    const { error } = await sb.storage.from(MEDIA_BUCKET)
+      .upload(path, file, { upsert: true, cacheControl: '3600', contentType: file.type });
+    if (error) { statusEl.textContent = 'Upload failed'; toast('Upload failed: ' + error.message, true); return null; }
+    const { data } = sb.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+    statusEl.textContent = 'Uploaded ✓';
+    return data.publicUrl;
+  }
+
+  // Avatar
+  function updateAvatarPreview() {
+    const url = document.getElementById('f-avatar').value.trim();
+    const img = document.getElementById('f-avatar-preview');
+    if (url) { img.src = url; img.style.display = ''; } else { img.style.display = 'none'; }
+  }
+  function resetAvatarUpload() {
+    document.getElementById('f-avatar-file').value = '';
+    document.getElementById('f-avatar-status').textContent = '';
+  }
+  async function uploadAvatar(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const slug = document.getElementById('f-slug').value.trim()
+              || slugify(document.getElementById('f-name').value)
+              || 'artist';
+    const path = `artists/${slug}/avatar_${Date.now()}.${extOf(file)}`;
+    const url = await uploadToMedia(file, path, document.getElementById('f-avatar-status'));
+    if (url) { document.getElementById('f-avatar').value = url; updateAvatarPreview(); }
+  }
+
+  // Artwork image
+  function updateArtworkPreview() {
+    const url = document.getElementById('w-image').value.trim();
+    const img = document.getElementById('w-image-preview');
+    if (url) { img.src = url; img.style.display = ''; } else { img.style.display = 'none'; }
+  }
+  function resetArtworkUpload() {
+    document.getElementById('w-image-file').value = '';
+    document.getElementById('w-image-status').textContent = '';
+  }
+  async function uploadArtworkImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const artistId = document.getElementById('w-artist-id').value || 'artist';
+    const wid = document.getElementById('w-id').value || nextArtworkId();
+    const path = `artworks/${artistId}/${wid}_${Date.now()}.${extOf(file)}`;
+    const url = await uploadToMedia(file, path, document.getElementById('w-image-status'));
+    if (url) { document.getElementById('w-image').value = url; updateArtworkPreview(); }
   }
 
   // ── Toast ─────────────────────────────────
