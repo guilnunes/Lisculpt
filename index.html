@@ -27,6 +27,7 @@
     }};
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="style.css" />
 
@@ -525,7 +526,38 @@
   function onImgError(el) { el.src = IMG_PLACEHOLDER; }
 
   // ──────────────────────────────────────────
-  // DATA — loaded from sculptors.json
+  // SUPABASE CLIENT
+  // ──────────────────────────────────────────
+  const SUPABASE_URL  = 'https://bhkggorcvcpnttbztdod.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJoa2dnb3JjdmNwbnR0Ynp0ZG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NDk1NzUsImV4cCI6MjA5ODEyNTU3NX0.UHv1ysY33NrIfxkF610TlHL47xcPdieX1F5eSfvsu-M';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  async function loadData() {
+    const { data: artists, error: aErr } = await sb
+      .from('artists')
+      .select('*')
+      .eq('published', true)
+      .order('rating', { ascending: false });
+    if (aErr) throw aErr;
+
+    const { data: artworks, error: wErr } = await sb
+      .from('artworks')
+      .select('*, artists!inner(published)')
+      .eq('artists.published', true);
+    if (wErr) throw wErr;
+
+    const artworksByArtist = {};
+    for (const w of artworks) {
+      (artworksByArtist[w.artist_id] = artworksByArtist[w.artist_id] || []).push(w);
+    }
+
+    return {
+      artists: artists.map(a => ({ ...a, artworks: artworksByArtist[a.id] || [] }))
+    };
+  }
+
+  // ──────────────────────────────────────────
+  // DATA
   // ──────────────────────────────────────────
   let DATA = { artists: [] };
 
@@ -545,7 +577,7 @@
 
   function handleRoute() {
     const hash  = location.hash || '#/';
-    const path  = hash.slice(1); // remove leading #
+    const path  = hash.slice(1);
     const parts = path.split('/').filter(Boolean);
 
     if (parts[0] === 'artist' && parts[1] && parts[2]) {
@@ -557,7 +589,6 @@
     }
   }
 
-  // Turns an artwork title into a stable URL segment, e.g. "Work 01" -> "work-01"
   function slugify(str) {
     return String(str || '')
       .toLowerCase()
@@ -572,18 +603,15 @@
 
   window.addEventListener('hashchange', handleRoute);
 
-  window.addEventListener('DOMContentLoaded', () => {
-    fetch('sculptors.json')
-      .then(r => r.json())
-      .then(data => {
-        DATA = data;
-        handleRoute();
-      })
-      .catch(err => {
-        console.error('Failed to load sculptors.json:', err);
-        document.getElementById('view-home').innerHTML =
-          '<p style="padding:4rem;font-family:Syne,sans-serif;color:#7A7770;">Could not load sculptor data. Make sure sculptors.json is in the same folder.</p>';
-      });
+  window.addEventListener('DOMContentLoaded', async () => {
+    try {
+      DATA = await loadData();
+      handleRoute();
+    } catch (err) {
+      console.error('Failed to load data from Supabase:', err);
+      document.getElementById('view-home').innerHTML =
+        '<p style="padding:4rem;font-family:Syne,sans-serif;color:#7A7770;">Could not load sculptor data.</p>';
+    }
   });
 
   // ──────────────────────────────────────────
