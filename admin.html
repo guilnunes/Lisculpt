@@ -977,6 +977,7 @@
 
   // ── Artwork gallery photos (views[]) ──────
   let artworkViews = [];
+  let dragViewIndex = null;
 
   function renderViewThumbs() {
     const el = document.getElementById('w-views-thumbs');
@@ -985,14 +986,37 @@
       return;
     }
     el.innerHTML = artworkViews.map((url, i) => `
-      <div style="position:relative; width:60px; height:60px;">
-        <img src="${url}" alt="" style="width:100%;height:100%;object-fit:cover;border:1px solid #C8C5BF;border-radius:4px;" onerror="this.style.opacity=0.3" />
+      <div draggable="true"
+           ondragstart="viewDragStart(event, ${i})" ondragover="viewDragOver(event)"
+           ondrop="viewDrop(event, ${i})" ondragend="viewDragEnd(event)"
+           title="Drag to reorder"
+           style="position:relative; width:60px; height:60px; cursor:grab;">
+        <img src="${url}" alt="" draggable="false" style="width:100%;height:100%;object-fit:cover;border:1px solid #C8C5BF;border-radius:4px;pointer-events:none;" onerror="this.style.opacity=0.3" />
+        <span style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,0.55);color:#fff;border-radius:3px;padding:0 3px;font-size:0.62rem;line-height:1.5;pointer-events:none;">⠿</span>
         <button type="button" title="Remove" onclick="removeArtworkView(${i})"
                 style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#b91c1c;color:#fff;font-size:0.7rem;line-height:1;cursor:pointer;">×</button>
       </div>`).join('');
   }
 
   function removeArtworkView(i) { artworkViews.splice(i, 1); renderViewThumbs(); }
+
+  // Drag-to-reorder
+  function viewDragStart(e, i) {
+    dragViewIndex = i;
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', String(i)); } catch (_) {}
+    e.currentTarget.style.opacity = '0.4';
+  }
+  function viewDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+  function viewDrop(e, i) {
+    e.preventDefault();
+    if (dragViewIndex === null || dragViewIndex === i) return;
+    const [moved] = artworkViews.splice(dragViewIndex, 1);
+    artworkViews.splice(i, 0, moved);
+    dragViewIndex = null;
+    renderViewThumbs();
+  }
+  function viewDragEnd() { dragViewIndex = null; renderViewThumbs(); }
 
   async function uploadArtworkViews(e) {
     const files = [...e.target.files];
