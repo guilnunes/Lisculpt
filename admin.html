@@ -296,6 +296,14 @@
           </div>
         </div>
       </div>
+      <div class="field">
+        <label>Additional photos (gallery)</label>
+        <div id="w-views-thumbs" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;"></div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="file" id="w-views-file" accept="image/*" multiple style="font-size:0.72rem;" onchange="uploadArtworkViews(event)" />
+          <span id="w-views-status" style="font-size:0.7rem; color:#7A7770;"></span>
+        </div>
+      </div>
       <div class="field"><label>Video URL</label><input type="text" id="w-video" /></div>
       <div class="field"><label>Description</label><textarea id="w-description"></textarea></div>
 
@@ -814,6 +822,10 @@
     setV('w-model-format', w && w.model_3d_format);
     setV('w-model-url', w && w.model_3d_url);
     document.getElementById('w-delete-btn').style.display = w ? '' : 'none';
+    artworkViews = (w && Array.isArray(w.views)) ? w.views.filter(x => typeof x === 'string' && x) : [];
+    document.getElementById('w-views-file').value = '';
+    document.getElementById('w-views-status').textContent = '';
+    renderViewThumbs();
     resetArtworkUpload();
     updateArtworkPreview();
     document.getElementById('artwork-modal').classList.remove('hidden');
@@ -863,6 +875,7 @@
       foundry:           txtOrNull('w-foundry'),
       patination:        txtOrNull('w-patination'),
       cast_date:         numOrNull('w-cast-date'),
+      views:             artworkViews,
       object_type_aat_uri: txtOrNull('w-object-type-aat'),
       material_aat_uri:  materialAat,
       technique_aat_uri: txtOrNull('w-technique-aat'),
@@ -960,6 +973,43 @@
     const path = `artworks/${artistId}/${wid}_${Date.now()}.${extOf(file)}`;
     const url = await uploadToMedia(file, path, document.getElementById('w-image-status'));
     if (url) { document.getElementById('w-image').value = url; updateArtworkPreview(); }
+  }
+
+  // ── Artwork gallery photos (views[]) ──────
+  let artworkViews = [];
+
+  function renderViewThumbs() {
+    const el = document.getElementById('w-views-thumbs');
+    if (!artworkViews.length) {
+      el.innerHTML = '<span style="font-size:0.72rem;color:#7A7770;">No extra photos yet.</span>';
+      return;
+    }
+    el.innerHTML = artworkViews.map((url, i) => `
+      <div style="position:relative; width:60px; height:60px;">
+        <img src="${url}" alt="" style="width:100%;height:100%;object-fit:cover;border:1px solid #C8C5BF;border-radius:4px;" onerror="this.style.opacity=0.3" />
+        <button type="button" title="Remove" onclick="removeArtworkView(${i})"
+                style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#b91c1c;color:#fff;font-size:0.7rem;line-height:1;cursor:pointer;">×</button>
+      </div>`).join('');
+  }
+
+  function removeArtworkView(i) { artworkViews.splice(i, 1); renderViewThumbs(); }
+
+  async function uploadArtworkViews(e) {
+    const files = [...e.target.files];
+    if (!files.length) return;
+    const status = document.getElementById('w-views-status');
+    const artistId = document.getElementById('w-artist-id').value || 'artist';
+    const wid = document.getElementById('w-id').value || nextArtworkId();
+    let done = 0;
+    for (const file of files) {
+      status.textContent = `Uploading ${done + 1}/${files.length}…`;
+      const path = `artworks/${artistId}/${wid}_view_${Date.now()}_${done}.${extOf(file)}`;
+      const url = await uploadToMedia(file, path, status);
+      if (url) { artworkViews.push(url); renderViewThumbs(); }
+      done++;
+    }
+    status.textContent = `Added ${done} photo(s)`;
+    e.target.value = '';
   }
 
   // ── Toast ─────────────────────────────────

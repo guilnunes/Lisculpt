@@ -330,8 +330,19 @@
           </div>
 
         </div>
+
+        <!-- Gallery arrows (shown only when >1 image) -->
+        <button id="artwork-prev" class="gallery-arrow gallery-arrow-left" aria-label="Previous image" onclick="galleryStep(-1)" style="display:none;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button id="artwork-next" class="gallery-arrow gallery-arrow-right" aria-label="Next image" onclick="galleryStep(1)" style="display:none;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
       </div>
     </div>
+
+    <!-- Gallery thumbnails (shown only when >1 image) -->
+    <div id="artwork-thumbs" class="artwork-thumbs" style="display:none;"></div>
 
     <!-- Description + Details -->
     <div class="max-w-screen-xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-16"
@@ -579,6 +590,59 @@
         <table style="width:100%;border-collapse:collapse;">${body}</table>
       </div>`;
   }
+
+  // ──────────────────────────────────────────
+  // ARTWORK IMAGE GALLERY (hero + thumbnails)
+  // ──────────────────────────────────────────
+  let gallery = { images: [], index: 0, alt: '' };
+
+  function initArtworkGallery(artwork) {
+    const views = Array.isArray(artwork.views)
+      ? artwork.views.filter(v => typeof v === 'string' && v) : [];
+    const imgs = [artwork.image, ...views].filter(Boolean);
+    gallery.images = [...new Set(imgs)];   // de-dup, preserve order
+    gallery.index = 0;
+    gallery.alt = artwork.title || '';
+
+    const heroImg = document.getElementById('artwork-hero-img');
+    if (!gallery.images.length) { heroImg.src = IMG_PLACEHOLDER; heroImg.alt = gallery.alt; }
+
+    renderThumbs();
+    setHeroImage(0);
+
+    const multi = gallery.images.length > 1;
+    document.getElementById('artwork-prev').style.display  = multi ? '' : 'none';
+    document.getElementById('artwork-next').style.display  = multi ? '' : 'none';
+    document.getElementById('artwork-thumbs').style.display = multi ? 'flex' : 'none';
+  }
+
+  function setHeroImage(i) {
+    if (!gallery.images.length) return;
+    const n = gallery.images.length;
+    gallery.index = (i + n) % n;
+    const heroImg = document.getElementById('artwork-hero-img');
+    heroImg.src = gallery.images[gallery.index];
+    heroImg.alt = gallery.alt + (n > 1 ? ` (${gallery.index + 1}/${n})` : '');
+    document.querySelectorAll('#artwork-thumbs button')
+      .forEach((b, idx) => b.classList.toggle('active', idx === gallery.index));
+  }
+
+  function galleryStep(d) { setHeroImage(gallery.index + d); }
+
+  function renderThumbs() {
+    document.getElementById('artwork-thumbs').innerHTML = gallery.images.map((src, i) =>
+      `<button type="button" onclick="setHeroImage(${i})" aria-label="View image ${i + 1}">
+         <img src="${src}" alt="" loading="lazy" onerror="onImgError(this)" />
+       </button>`).join('');
+  }
+
+  // Arrow-key navigation while the artwork view is open
+  window.addEventListener('keydown', (e) => {
+    if (document.getElementById('view-artwork').classList.contains('hidden')) return;
+    if (gallery.images.length < 2) return;
+    if (e.key === 'ArrowLeft')  { galleryStep(-1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { galleryStep(1);  e.preventDefault(); }
+  });
 
   // ──────────────────────────────────────────
   // IMAGE PLACEHOLDER
@@ -935,10 +999,8 @@
     window.scrollTo({ top: 0 });
     setArtworkJsonLd(artist, artwork);
 
-    // Hero
-    const heroImg = document.getElementById('artwork-hero-img');
-    heroImg.src = artwork.image;
-    heroImg.alt = artwork.title;
+    // Hero + gallery
+    initArtworkGallery(artwork);
 
     document.getElementById('artwork-back-btn').onclick = () => navigate(`/artist/${artist.id}`);
     document.getElementById('artwork-back-label').textContent = artist.name;
