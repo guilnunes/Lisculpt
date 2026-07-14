@@ -1,0 +1,51 @@
+name: Weekly media cleanup (backup trigger)
+
+# Backup for the Supabase pg_cron job "cleanup-media-weekly".
+# pg_cron only fires while the database is running; on the free tier the project
+# auto-pauses, so this GitHub-hosted schedule provides an independent trigger.
+#
+# - Runs Wednesdays 04:00 UTC (offset from the pg_cron job's Sun 03:00 UTC).
+# - The anon key below is the project's PUBLIC key (already shipped in the site),
+#   so no secret is required for the basic trigger.
+# - OPTIONAL: to make it fully pause-proof, add a repo secret SUPABASE_ACCESS_TOKEN
+#   (a Supabase personal access token). When present, the workflow first restores
+#   the project if it's paused, then runs the cleanup.
+
+on:
+  schedule:
+    - cron: '0 4 * * 3'      # Wednesdays 04:00 UTC
+  workflow_dispatch: {}       # allows manual runs from the Actions tab
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_REF: bhkggorcvcpnttbztdod
+      # Public anon JWT (safe to expose — also embedded in the site HTML)
+      ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJoa2dnb3JjdmNwbnR0Ynp0ZG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NDk1NzUsImV4cCI6MjA5ODEyNTU3NX0.UHv1ysY33NrIfxkF610TlHL47xcPdieX1F5eSfvsu-M
+      ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - name: Restore project if paused (only when SUPABASE_ACCESS_TOKEN is set)
+        if: ${{ env.ACCESS_TOKEN != '' }}
+        run: |
+          set -euo pipefail
+          echo "Ensuring project is active (no-op if already running)…"
+          curl -s -X POST "https://api.supabase.com/v1/projects/${PROJECT_REF}/restore" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" -d '{}' || true
+          echo "Waiting for the project to come online…"
+          sleep 90
+
+      - name: Trigger cleanup-media edge function
+        run: |
+          set -euo pipefail
+          code=$(curl -s -o response.json -w "%{http_code}" -X POST \
+            "https://${PROJECT_REF}.supabase.co/functions/v1/cleanup-media" \
+            -H "Authorization: Bearer ${ANON_KEY}" \
+            -H "Content-Type: application/json" -d '{}')
+          echo "HTTP ${code}"
+          cat response.json || true
+          if [ "${code}" != "200" ]; then
+            echo "::error::cleanup-media returned HTTP ${code} (project may be paused; add SUPABASE_ACCESS_TOKEN to auto-restore)"
+            exit 1
+          fi
