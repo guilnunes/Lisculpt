@@ -419,7 +419,14 @@
   // ── Data ──────────────────────────────────
   let ARTISTS = [];
   let artworkCounts = {};
+  let artworkMissing = {};
   let pendingDeleteId = null;
+
+  // Small amber "needs image" pill
+  function needBadge(text) {
+    return `<span style="display:inline-block;margin-left:6px;padding:2px 7px;border-radius:10px;` +
+      `font-size:0.6rem;letter-spacing:0.06em;background:#F5E4C3;color:#8a6d1f;white-space:nowrap;">${text}</span>`;
+  }
 
   async function loadArtists() {
     const { data: artists, error } = await sb
@@ -430,10 +437,12 @@
 
     const { data: counts } = await sb
       .from('artworks')
-      .select('artist_id');
+      .select('artist_id, image');
     artworkCounts = {};
+    artworkMissing = {};
     (counts || []).forEach(r => {
       artworkCounts[r.artist_id] = (artworkCounts[r.artist_id] || 0) + 1;
+      if (!r.image) artworkMissing[r.artist_id] = (artworkMissing[r.artist_id] || 0) + 1;
     });
 
     ARTISTS = artists;
@@ -463,15 +472,16 @@
     tbody.innerHTML = filtered.map(a => `
       <tr>
         <td>
-          <div style="font-weight:500;">${a.name}</div>
+          <div style="font-weight:500;">${a.name}${a.avatar ? '' : needBadge('no photo')}</div>
           <div style="font-size:0.7rem; color:#7A7770; margin-top:2px;">${a.id}</div>
         </td>
         <td>${a.country || '—'}</td>
         <td>${a.city || '—'}</td>
         <td>${a.birth_year || '—'}</td>
         <td>${a.rating ?? '—'}</td>
-        <td style="text-align:center;">
+        <td style="text-align:center; white-space:nowrap;">
           <button class="btn btn-ghost" style="padding:4px 10px;" onclick="openGallery('${a.id}')">${artworkCounts[a.id] || 0} works</button>
+          ${(artworkMissing[a.id] || 0) ? `<div style="margin-top:4px;">${needBadge('⚠ ' + artworkMissing[a.id] + ' no image')}</div>` : ''}
         </td>
         <td>
           <label class="toggle" title="${a.published ? 'Published — click to unpublish' : 'Unpublished — click to publish'}">
