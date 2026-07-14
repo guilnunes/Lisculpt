@@ -293,6 +293,13 @@
 
       <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin:0.5rem 0;border-top:1px solid #C8C5BF;padding-top:1rem;">Taxonomy (Getty AAT)</div>
       <div class="field">
+        <label>Object Type AAT URI</label>
+        <input type="text" id="w-object-type-aat" list="objecttype-list" placeholder="http://vocab.getty.edu/aat/…" />
+        <datalist id="objecttype-list">
+          <option value="http://vocab.getty.edu/aat/300047090" label="sculpture"></option>
+        </datalist>
+      </div>
+      <div class="field">
         <label>Material AAT URI <span style="text-transform:none;letter-spacing:0;color:#9a978f;">— auto-filled from material</span></label>
         <input type="text" id="w-material-aat" placeholder="http://vocab.getty.edu/aat/…" />
       </div>
@@ -703,6 +710,7 @@
     setV('w-foundry', w && w.foundry);
     setV('w-patination', w && w.patination);
     setV('w-cast-date', w && w.cast_date);
+    setV('w-object-type-aat', w && w.object_type_aat_uri);
     setV('w-material-aat', w && w.material_aat_uri);
     setV('w-technique-aat', w && w.technique_aat_uri);
     setV('w-location-country', w && w.location_country);
@@ -758,6 +766,7 @@
       foundry:           txtOrNull('w-foundry'),
       patination:        txtOrNull('w-patination'),
       cast_date:         numOrNull('w-cast-date'),
+      object_type_aat_uri: txtOrNull('w-object-type-aat'),
       material_aat_uri:  materialAat,
       technique_aat_uri: txtOrNull('w-technique-aat'),
       location_country:  txtOrNull('w-location-country'),

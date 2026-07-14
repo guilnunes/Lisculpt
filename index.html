@@ -355,23 +355,8 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-10">
-        <div>
-          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Year</div>
-          <div id="artwork-page-year" class="font-display font-light" style="font-size:2.25rem; line-height:1;"></div>
-        </div>
-        <div>
-          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Material</div>
-          <div id="artwork-page-material" class="font-display font-light" style="font-size:1.2rem;"></div>
-        </div>
-        <div id="artwork-dimensions-block">
-          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Dimensions</div>
-          <div id="artwork-page-dimensions" class="font-display font-light" style="font-size:1.2rem;"></div>
-        </div>
-        <div id="artwork-edition-block">
-          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Edition</div>
-          <div id="artwork-page-edition" class="font-display font-light" style="font-size:1.2rem;"></div>
-        </div>
+      <div>
+        <div id="artwork-infobox" class="art-infobox"></div>
       </div>
 
     </div>
@@ -451,7 +436,7 @@
       const node = {
         '@type': 'VisualArtwork',
         name: w.title,
-        artform: 'Sculpture',
+        artform: w.object_type_aat_uri || 'Sculpture',
         artMedium: w.material,
         dateCreated: String(w.year),
         image: w.image,
@@ -483,7 +468,7 @@
       '@context': 'https://schema.org',
       '@type': 'VisualArtwork',
       name: artwork.title,
-      artform: 'Sculpture',
+      artform: artwork.object_type_aat_uri || 'Sculpture',
       artMedium: artwork.material,
       dateCreated: String(artwork.year),
       image: artwork.image,
@@ -510,6 +495,89 @@
     if (extra.length) node.additionalProperty = extra;
 
     setPageJsonLd(node);
+  }
+
+  // ──────────────────────────────────────────
+  // ARTWORK TAXONOMY INFOBOX
+  // ──────────────────────────────────────────
+  // Known Getty AAT labels (for friendly display; falls back to the raw id).
+  const AAT_LABELS = {
+    '300047090': 'sculpture',
+    '300053917': 'lost-wax casting',
+    '300010957': 'bronze',
+    '300010439': 'clay',
+    '300011443': 'marble',
+    '300011176': 'stone',
+    '300010660': 'ceramics',
+    '300011914': 'wood',
+    '300010797': 'glass'
+  };
+  function aatId(uri)   { const m = /(\d+)\s*$/.exec(uri || ''); return m ? m[1] : ''; }
+  function aatLabel(uri){ const id = aatId(uri); return AAT_LABELS[id] || null; }
+  function aatLink(uri, text) {
+    if (!uri) return '';
+    const label = text || aatLabel(uri) || ('AAT ' + aatId(uri));
+    return `<a href="${uri}" target="_blank" rel="noopener noreferrer" ` +
+           `style="color:inherit;text-decoration:underline;text-decoration-color:#C8C5BF;text-underline-offset:2px;">` +
+           `${label}<span style="font-size:0.7em;opacity:0.6;"> ↗</span></a>`;
+  }
+
+  function renderArtworkInfobox(artist, artwork) {
+    const w = artwork;
+    const rows = [];
+    const add = (label, value) => { if (value !== null && value !== undefined && value !== '') rows.push([label, value]); };
+
+    // Object type (label from AAT, linked)
+    if (w.object_type_aat_uri) {
+      const lbl = aatLabel(w.object_type_aat_uri) || 'Sculpture';
+      add('Type', aatLink(w.object_type_aat_uri, lbl.charAt(0).toUpperCase() + lbl.slice(1)));
+    }
+    add('Artist', `<a href="#/artist/${artist.id}" style="color:inherit;text-decoration:underline;text-decoration-color:#C8C5BF;text-underline-offset:2px;">${artist.name}</a>`);
+    add('Year', w.year);
+
+    // Material — free-text label, with AAT crosswalk link if present
+    if (w.material) {
+      add('Material', w.material_aat_uri
+        ? `${w.material} <span style="color:#7A7770;">· ${aatLink(w.material_aat_uri, 'AAT')}</span>`
+        : w.material);
+    }
+    if (w.technique_aat_uri) add('Technique', aatLink(w.technique_aat_uri));
+    if (w.style) add('Style', w.style);
+
+    // Dimensions
+    if (w.height_cm || w.width_cm || w.depth_cm) {
+      const fmt = d => (d || d === 0) ? String(d) : '?';
+      add('Dimensions', `${fmt(w.height_cm)} × ${fmt(w.width_cm)} × ${fmt(w.depth_cm)} cm <span style="color:#7A7770;">(h × w × d)</span>`);
+    }
+    if (w.weight_kg)      add('Weight', `${w.weight_kg} kg`);
+    if (w.base_height_cm) add('Base height', `${w.base_height_cm} cm`);
+
+    // Edition & casting
+    if (w.edition_size || w.edition_number) {
+      add('Edition', w.edition_number
+        ? (w.edition_size ? `${w.edition_number} of ${w.edition_size}` : w.edition_number)
+        : `Edition of ${w.edition_size}`);
+    }
+    add('Foundry',    w.foundry);
+    add('Cast',       w.cast_date);
+    add('Patination', w.patination);
+
+    // Governance
+    add('Location', w.location_country);
+    add('License',  w.license);
+    if (w.wikidata_qid) add('Wikidata', aatLink('https://www.wikidata.org/wiki/' + w.wikidata_qid, w.wikidata_qid));
+
+    const box = document.getElementById('artwork-infobox');
+    const body = rows.map(([label, value]) => `
+      <tr style="border-top:1px solid #E8E4DC;">
+        <th style="text-align:left;vertical-align:top;padding:0.5rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;white-space:nowrap;font-weight:500;">${label}</th>
+        <td style="padding:0.5rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.85rem;color:#0D0D0D;">${value}</td>
+      </tr>`).join('');
+    box.innerHTML = `
+      <div style="border:1px solid #C8C5BF;border-radius:6px;overflow:hidden;">
+        <div style="background:#0D0D0D;color:#F2EFE9;padding:0.7rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;">${w.title || 'Details'}</div>
+        <table style="width:100%;border-collapse:collapse;">${body}</table>
+      </div>`;
   }
 
   // ──────────────────────────────────────────
@@ -898,29 +966,8 @@
     }
     document.getElementById('artwork-artist-name').textContent = artist.name;
 
-    // Stats
-    document.getElementById('artwork-page-year').textContent     = artwork.year || '—';
-    document.getElementById('artwork-page-material').textContent = artwork.material || '—';
-
-    const dimsBlock = document.getElementById('artwork-dimensions-block');
-    if (artwork.width_cm || artwork.height_cm || artwork.depth_cm) {
-      dimsBlock.style.display = '';
-      document.getElementById('artwork-page-dimensions').textContent =
-        [artwork.width_cm, artwork.height_cm, artwork.depth_cm]
-          .map(d => d ? `${d}` : '?').join(' × ') + ' cm';
-    } else {
-      dimsBlock.style.display = 'none';
-    }
-
-    const editionBlock = document.getElementById('artwork-edition-block');
-    if (artwork.edition_size) {
-      editionBlock.style.display = '';
-      document.getElementById('artwork-page-edition').textContent = artwork.edition_number
-        ? `${artwork.edition_number} / ${artwork.edition_size}`
-        : `Edition of ${artwork.edition_size}`;
-    } else {
-      editionBlock.style.display = 'none';
-    }
+    // Taxonomy infobox
+    renderArtworkInfobox(artist, artwork);
 
     // More by this artist
     document.getElementById('artwork-more-artist-name').textContent = artist.name;
