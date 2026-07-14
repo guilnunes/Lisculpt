@@ -496,7 +496,8 @@
           </label>
         </td>
         <td style="text-align:right; white-space:nowrap;">
-          <button class="btn btn-ghost" onclick="openModal('${a.id}')">Edit</button>
+          <a class="btn btn-ghost" href="index.html#/artist/${a.id}" target="_blank" rel="noopener" style="text-decoration:none;" title="Open public profile in a new tab">View ↗</a>
+          <button class="btn btn-ghost" style="margin-left:6px;" onclick="openModal('${a.id}')">Edit</button>
           <button class="btn btn-danger" style="margin-left:6px;" onclick="openConfirm('${a.id}')">Delete</button>
         </td>
       </tr>
