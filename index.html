@@ -676,7 +676,7 @@
   function renderThumbs() {
     document.getElementById('artwork-thumbs').innerHTML = gallery.images.map((src, i) =>
       `<button type="button" onclick="setHeroImage(${i}, true)" aria-label="View image ${i + 1}">
-         <img src="${src}" alt="" loading="lazy" onerror="onImgError(this)" />
+         <img src="${src}" alt="" loading="eager" decoding="async" onerror="onImgError(this)" />
        </button>`).join('');
   }
 
