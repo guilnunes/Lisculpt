@@ -20,6 +20,15 @@ body::after {
 @media (min-width: 1280px) { .masonry { columns: 4; } }
 .masonry-item { break-inside: avoid; margin-bottom: 2px; display: block; }
 
+/* Artist portfolio: uniform-height blocks (overrides masonry for this grid only) */
+#artist-works-grid { columns: unset; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+@media (min-width: 768px)  { #artist-works-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1280px) { #artist-works-grid { grid-template-columns: repeat(4, 1fr); } }
+#artist-works-grid .masonry-item { margin-bottom: 0; }
+#artist-works-grid .artwork-card { height: 100%; }
+#artist-works-grid .artwork-card img,
+#artist-works-grid .artwork-card video { aspect-ratio: 4 / 5; height: 100%; object-fit: cover; }
+
 /* ── Artwork card ── */
 .artwork-card {
   position: relative;
