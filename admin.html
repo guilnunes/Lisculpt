@@ -741,6 +741,7 @@
       .from('artworks')
       .select('*')
       .eq('artist_id', galleryArtistId)
+      .order('is_cover', { ascending: false })
       .order('sort_order', { ascending: true, nullsFirst: false })
       .order('id', { ascending: true });
     if (error) { toast('Failed to load artworks', true); return; }
@@ -756,20 +757,37 @@
     body.innerHTML =
       `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:1rem;">` +
       galleryWorks.map(w => `
-        <div style="border:1px solid #C8C5BF; border-radius:6px; overflow:hidden; background:#fff;">
-          <div style="aspect-ratio:1; background:#EEEBE5; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+        <div style="border:1px solid ${w.is_cover ? '#0D0D0D' : '#C8C5BF'}; border-radius:6px; overflow:hidden; background:#fff;">
+          <div style="position:relative; aspect-ratio:1; background:#EEEBE5; display:flex; align-items:center; justify-content:center; overflow:hidden;">
             ${w.image
               ? `<img src="${w.image}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'" />`
               : `<span style="color:#B0ADA6;font-size:0.7rem;">no image</span>`}
+            ${w.is_cover ? `<span style="position:absolute;top:6px;left:6px;background:#0D0D0D;color:#F2EFE9;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:10px;">★ Cover</span>` : ''}
           </div>
           <div style="padding:0.6rem 0.75rem;">
             <div style="font-weight:500; font-size:0.82rem;">${w.title || '—'}</div>
             <div style="font-size:0.7rem; color:#7A7770; margin-top:2px;">${[w.material, w.year].filter(Boolean).join(' · ') || '—'}</div>
             <div style="font-size:0.6rem; color:${w.material_aat_uri ? '#3f7a3f' : '#b08a3f'}; margin-top:3px;">${w.material_aat_uri ? 'AAT ✓' : 'AAT —'}</div>
-            <button class="btn btn-ghost" style="padding:4px 10px; margin-top:0.6rem;" onclick="openArtworkModal('${w.id}')">Edit</button>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:0.6rem;">
+              <button class="btn btn-ghost" style="padding:4px 10px;" onclick="openArtworkModal('${w.id}')">Edit</button>
+              ${w.is_cover
+                ? ''
+                : (w.image ? `<button class="btn btn-ghost" style="padding:4px 10px;" onclick="setCover('${w.id}')" title="Use as the artist's hero image">Set as cover</button>` : '')}
+            </div>
           </div>
         </div>
       `).join('') + `</div>`;
+  }
+
+  async function setCover(id) {
+    // one cover per artist: clear the current cover, then set the chosen one
+    const { error: e1 } = await sb.from('artworks').update({ is_cover: false })
+      .eq('artist_id', galleryArtistId).eq('is_cover', true);
+    if (e1) { toast('Failed: ' + e1.message, true); return; }
+    const { error: e2 } = await sb.from('artworks').update({ is_cover: true }).eq('id', id);
+    if (e2) { toast('Failed: ' + e2.message, true); return; }
+    toast('Cover image set');
+    await loadGallery();
   }
 
   function closeGallery() { document.getElementById('gallery-modal').classList.add('hidden'); loadArtists(); }

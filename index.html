@@ -675,7 +675,10 @@
     const { data: artworks, error: wErr } = await sb
       .from('artworks')
       .select('*, artists!inner(published)')
-      .eq('artists.published', true);
+      .eq('artists.published', true)
+      .order('is_cover', { ascending: false })          // cover artwork first
+      .order('sort_order', { ascending: true, nullsFirst: false })
+      .order('id', { ascending: true });
     if (wErr) throw wErr;
 
     const artworksByArtist = {};
