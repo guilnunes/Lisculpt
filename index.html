@@ -594,7 +594,18 @@
   // ──────────────────────────────────────────
   // ARTWORK IMAGE GALLERY (hero + thumbnails)
   // ──────────────────────────────────────────
-  let gallery = { images: [], index: 0, alt: '' };
+  let gallery = { images: [], index: 0, alt: '', transition: 'fade' };
+  let heroBusy = false;
+
+  // Per-work hero transition presets. Each animates the hero image out, swaps
+  // the source while invisible, then animates the new image in.
+  const HERO_TRANSITIONS = {
+    none:  null,
+    fade:  { dur: 360, out: { opacity: '0' },                               inn: { opacity: '0' } },
+    zoom:  { dur: 480, out: { opacity: '0', transform: 'scale(1.06)' },     inn: { opacity: '0', transform: 'scale(0.94)' } },
+    blur:  { dur: 520, out: { opacity: '0', filter: 'blur(16px)' },         inn: { opacity: '0', filter: 'blur(16px)' } },
+    slide: { dur: 440, out: { opacity: '0', transform: 'translateX(-6%)' }, inn: { opacity: '0', transform: 'translateX(6%)' } },
+  };
 
   function initArtworkGallery(artwork) {
     const views = Array.isArray(artwork.views)
@@ -603,8 +614,12 @@
     gallery.images = [...new Set(imgs)];   // de-dup, preserve order
     gallery.index = 0;
     gallery.alt = artwork.title || '';
+    gallery.transition = HERO_TRANSITIONS.hasOwnProperty(artwork.transition_style)
+      ? artwork.transition_style : 'fade';
 
     const heroImg = document.getElementById('artwork-hero-img');
+    heroImg.style.cssText = '';   // clear any leftover transition state
+    heroBusy = false;
     if (!gallery.images.length) { heroImg.src = IMG_PLACEHOLDER; heroImg.alt = gallery.alt; }
 
     renderThumbs();
@@ -616,22 +631,52 @@
     document.getElementById('artwork-thumbs').style.display = multi ? 'flex' : 'none';
   }
 
-  function setHeroImage(i) {
-    if (!gallery.images.length) return;
-    const n = gallery.images.length;
-    gallery.index = (i + n) % n;
-    const heroImg = document.getElementById('artwork-hero-img');
-    heroImg.src = gallery.images[gallery.index];
-    heroImg.alt = gallery.alt + (n > 1 ? ` (${gallery.index + 1}/${n})` : '');
+  function updateActiveThumb() {
     document.querySelectorAll('#artwork-thumbs button')
       .forEach((b, idx) => b.classList.toggle('active', idx === gallery.index));
   }
 
-  function galleryStep(d) { setHeroImage(gallery.index + d); }
+  function setHeroImage(i, animate) {
+    if (!gallery.images.length) return;
+    const n = gallery.images.length;
+    const idx = ((i % n) + n) % n;
+    const heroImg = document.getElementById('artwork-hero-img');
+    const newSrc = gallery.images[idx];
+    const newAlt = gallery.alt + (n > 1 ? ` (${idx + 1}/${n})` : '');
+    const t = HERO_TRANSITIONS[gallery.transition];
+
+    if (!animate || !t || idx === gallery.index || heroBusy) {
+      gallery.index = idx; updateActiveThumb();
+      heroImg.src = newSrc; heroImg.alt = newAlt;
+      return;
+    }
+
+    gallery.index = idx; updateActiveThumb();   // highlight new thumb immediately
+    heroBusy = true;
+    const half = Math.round(t.dur / 2);
+    const trans = `opacity ${half}ms ease, transform ${half}ms ease, filter ${half}ms ease`;
+
+    heroImg.style.transition = trans;
+    Object.assign(heroImg.style, t.out);                 // 1) animate current out
+
+    setTimeout(() => {
+      heroImg.src = newSrc; heroImg.alt = newAlt;         // 2) swap while invisible
+      heroImg.style.transition = 'none';
+      Object.assign(heroImg.style, t.inn);               //    jump to "in" start
+      void heroImg.offsetWidth;                          //    reflow
+      heroImg.style.transition = trans;                  // 3) animate new in
+      heroImg.style.opacity = '1';
+      heroImg.style.transform = 'none';
+      heroImg.style.filter = 'none';
+      setTimeout(() => { heroImg.style.transition = ''; heroBusy = false; }, half + 40);
+    }, half + 20);
+  }
+
+  function galleryStep(d) { setHeroImage(gallery.index + d, true); }
 
   function renderThumbs() {
     document.getElementById('artwork-thumbs').innerHTML = gallery.images.map((src, i) =>
-      `<button type="button" onclick="setHeroImage(${i})" aria-label="View image ${i + 1}">
+      `<button type="button" onclick="setHeroImage(${i}, true)" aria-label="View image ${i + 1}">
          <img src="${src}" alt="" loading="lazy" onerror="onImgError(this)" />
        </button>`).join('');
   }
