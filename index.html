@@ -227,6 +227,13 @@
             <p id="artist-page-location"
                style="font-family:'Syne',sans-serif; font-size:0.7rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.5);">
             </p>
+            <a id="artist-hero-cta" href="#"
+               style="display:none; align-items:center; gap:8px; margin-top:1.1rem; font-family:'Syne',sans-serif; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.2s;"
+               onmouseover="this.style.color='rgba(255,255,255,0.95)'"
+               onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+              Check this piece
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
           </div>
 
         </div>
@@ -965,6 +972,15 @@
     document.getElementById('artist-page-location').textContent = [artist.city, artist.country].filter(Boolean).join(', ');
     document.getElementById('artist-page-tags').innerHTML = (artist.tags || [])
       .map(t => `<span class="chip">${t}</span>`).join('');
+
+    // Hero CTA → the work currently featured in the hero (the cover)
+    const ctaEl = document.getElementById('artist-hero-cta');
+    if (cover && cover.title) {
+      ctaEl.href = `#/artist/${artist.id}/${slugify(cover.title)}`;
+      ctaEl.style.display = 'inline-flex';
+    } else {
+      ctaEl.style.display = 'none';
+    }
 
     // Information infobox + about
     renderArtistInfobox(artist);
