@@ -278,8 +278,9 @@
       <div class="grid2">
         <div class="field">
           <label>Material</label>
-          <input type="text" id="w-material" list="material-list" oninput="onMaterialInput()" />
+          <input type="text" id="w-material" list="material-list" oninput="onMaterialInput()" placeholder="Pick below or type any material" />
           <datalist id="material-list"></datalist>
+          <div id="w-material-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;"></div>
         </div>
         <div class="field"><label>Style</label><input type="text" id="w-style" /></div>
       </div>
@@ -826,6 +827,7 @@
     document.getElementById('w-views-file').value = '';
     document.getElementById('w-views-status').textContent = '';
     renderViewThumbs();
+    renderMaterialChips();
     resetArtworkUpload();
     updateArtworkPreview();
     document.getElementById('artwork-modal').classList.remove('hidden');
@@ -839,6 +841,32 @@
     const current = aatEl.value.trim();
     const isMappedValue = Object.values(AAT_MATERIAL_MAP).includes(current);
     if (mapped && (!current || isMappedValue)) aatEl.value = mapped;
+    highlightMaterialChips();
+  }
+
+  // Always-visible material picker (chips). AAT-mapped materials + common extras.
+  const MATERIAL_CHIPS = ['Bronze', 'Clay', 'Marble', 'Stone', 'Ceramics', 'Wood', 'Glass', 'Mixed Media'];
+
+  function renderMaterialChips() {
+    document.getElementById('w-material-chips').innerHTML = MATERIAL_CHIPS.map(m =>
+      `<button type="button" data-mat="${m}" onclick="pickMaterial('${m}')"
+        style="padding:3px 10px;border:1px solid #C8C5BF;border-radius:14px;background:#fff;font-size:0.7rem;cursor:pointer;font-family:inherit;">${m}</button>`
+    ).join('');
+    highlightMaterialChips();
+  }
+
+  function pickMaterial(m) {
+    document.getElementById('w-material').value = m;
+    onMaterialInput();
+  }
+
+  function highlightMaterialChips() {
+    const cur = (document.getElementById('w-material').value || '').trim().toLowerCase();
+    document.querySelectorAll('#w-material-chips button').forEach(b => {
+      const on = b.dataset.mat.toLowerCase() === cur;
+      b.style.background = on ? '#0D0D0D' : '#fff';
+      b.style.color = on ? '#F2EFE9' : '#0D0D0D';
+    });
   }
 
   function closeArtworkModal() { document.getElementById('artwork-modal').classList.add('hidden'); }
