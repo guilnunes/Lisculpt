@@ -178,6 +178,23 @@ body::after {
   filter: brightness(0.48);
 }
 
+/* ── Artwork hero: fit (contain) on a black stage, edges fading to black ── */
+.artwork-hero {
+  position: relative;
+  height: 70vh;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.artwork-hero-img {
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  object-fit: contain; display: block;
+  /* subtle fade of the left/right edges into the black stage */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 4%, #000 96%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, #000 4%, #000 96%, transparent 100%);
+}
+
 /* ── Artwork gallery ── */
 .gallery-arrow {
   position: absolute; top: 50%; transform: translateY(-50%);
