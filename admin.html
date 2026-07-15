@@ -771,7 +771,7 @@
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:0.6rem;">
               <button class="btn btn-ghost" style="padding:4px 10px;" onclick="openArtworkModal('${w.id}')">Edit</button>
               ${w.is_cover
-                ? ''
+                ? `<span style="font-size:0.68rem; color:#3f7a3f; align-self:center;">selected as cover</span>`
                 : (w.image ? `<button class="btn btn-ghost" style="padding:4px 10px;" onclick="setCover('${w.id}')" title="Use as the artist's hero image">Set as cover</button>` : '')}
             </div>
           </div>
