@@ -234,7 +234,7 @@
              style="display:none; position:absolute; left:50%; bottom:1.5rem; transform:translateX(-50%); align-items:center; gap:8px; white-space:nowrap; font-family:'Syne',sans-serif; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.2s;"
              onmouseover="this.style.color='rgba(255,255,255,0.95)'"
              onmouseout="this.style.color='rgba(255,255,255,0.55)'">
-            See this artwork
+            <span id="artist-hero-cta-text">See this artwork</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
 
@@ -978,6 +978,10 @@
     // Hero CTA → the work currently featured in the hero (the cover)
     const ctaEl = document.getElementById('artist-hero-cta');
     if (cover && cover.title) {
+      const imgs = [cover.image, ...(Array.isArray(cover.views) ? cover.views : [])].filter(Boolean);
+      const count = new Set(imgs).size;
+      document.getElementById('artist-hero-cta-text').textContent =
+        count > 0 ? `See this artwork (${count} image${count === 1 ? '' : 's'})` : 'See this artwork';
       ctaEl.href = `#/artist/${artist.id}/${slugify(cover.title)}`;
       ctaEl.style.display = 'inline-flex';
     } else {
