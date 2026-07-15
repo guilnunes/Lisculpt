@@ -278,8 +278,7 @@
       <div class="grid2">
         <div class="field">
           <label>Material</label>
-          <input type="text" id="w-material" list="material-list" oninput="onMaterialInput()" placeholder="Pick below or type any material" />
-          <datalist id="material-list"></datalist>
+          <input type="text" id="w-material" oninput="onMaterialInput()" placeholder="Pick below or type any material" />
           <div id="w-material-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;"></div>
         </div>
         <div class="field"><label>Style</label><input type="text" id="w-style" /></div>
@@ -733,9 +732,6 @@
     galleryArtistId = artistId;
     const a = ARTISTS.find(x => x.id === artistId);
     document.getElementById('gallery-title').textContent = a ? `${a.name} — Artworks` : 'Artworks';
-    document.getElementById('material-list').innerHTML =
-      Object.keys(AAT_MATERIAL_MAP)
-        .map(m => `<option value="${m.charAt(0).toUpperCase() + m.slice(1)}">`).join('');
     document.getElementById('gallery-modal').classList.remove('hidden');
     await loadGallery();
   }
