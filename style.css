@@ -20,6 +20,12 @@ body::after {
 @media (min-width: 1280px) { .masonry { columns: 4; } }
 .masonry-item { break-inside: avoid; margin-bottom: 2px; display: block; }
 
+/* Artist page body: Portfolio (75%) + Info (25%); stacks below 1024px (tablet portrait + mobile) */
+.artist-body { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding: 2.5rem 1.5rem 4rem; }
+@media (min-width: 1024px) {
+  .artist-body { grid-template-columns: 3fr 1fr; gap: 3rem; padding: 3rem 2rem 5rem; align-items: start; }
+}
+
 /* Uniform-height blocks (overrides masonry) — artist portfolio + "more by artist" */
 #artist-works-grid, #artwork-more-grid { columns: unset; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
 @media (min-width: 768px)  { #artist-works-grid, #artwork-more-grid { grid-template-columns: repeat(3, 1fr); } }

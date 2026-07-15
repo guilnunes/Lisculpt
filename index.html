@@ -233,58 +233,24 @@
       </div>
     </div>
 
-    <!-- Bio + Stats -->
-    <div class="max-w-screen-xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-16"
-         style="border-bottom: 1px solid #C8C5BF;">
+    <!-- Body: Portfolio (75%) + Info infobox (25%); stacks on tablet-portrait/mobile -->
+    <div class="artist-body max-w-screen-2xl mx-auto">
 
-      <div class="md:col-span-2">
-        <p id="artist-page-bio"
-           class="font-display font-light leading-relaxed"
-           style="font-size: 1.25rem; color: rgba(13,13,13,0.78);">
-        </p>
-      </div>
+      <!-- Portfolio -->
+      <section class="artist-portfolio">
+        <h2 class="font-display font-light"
+            style="font-size:1.75rem; letter-spacing:0.05em; border-bottom:1px solid #C8C5BF; padding-bottom:1rem; margin-bottom:1.25rem;">
+          Portfolio
+        </h2>
+        <div id="artist-works-grid"></div>
+      </section>
 
-      <div class="flex flex-col gap-10">
-        <div id="artist-profile-block">
-          <img id="artist-page-avatar" src="" alt=""
-               style="width:72px;height:72px;border-radius:9999px;object-fit:cover;border:1px solid #C8C5BF;display:block;margin-bottom:0.5rem;"
-               onerror="this.style.display='none';document.getElementById('artist-avatar-credit').style.display='none'" />
-          <div id="artist-avatar-credit"
-               style="display:none;font-family:'Syne',sans-serif;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#7A7770;">
-            credits by: <span id="artist-avatar-credit-name"></span>
-          </div>
-        </div>
-        <div>
-          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Works</div>
-          <div id="artist-work-count"
-               class="font-display font-light" style="font-size:3.5rem; line-height:1;">
-          </div>
-        </div>
-        <div>
-          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.5rem;">Based in</div>
-          <div id="artist-page-city"
-               class="font-display font-light" style="font-size:1.2rem;">
-          </div>
-        </div>
-        <div>
-          <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.6rem;">Materials</div>
-          <div id="artist-materials" class="flex flex-wrap gap-1.5"></div>
-        </div>
-      </div>
+      <!-- Information (Wikipedia-style infobox) -->
+      <aside class="artist-info">
+        <div id="artist-infobox"></div>
+        <div id="artist-about" style="margin-top:1.5rem;"></div>
+      </aside>
 
-    </div>
-
-    <!-- Works grid -->
-    <div class="px-1.5 py-1.5 mt-0">
-      <div class="max-w-screen-2xl mx-auto">
-        <div style="padding: 2.5rem 1.5rem 1.5rem;">
-          <h2 class="font-display font-light"
-              style="font-size:1.75rem; letter-spacing:0.05em; border-bottom:1px solid #C8C5BF; padding-bottom:1rem;">
-            Portfolio
-          </h2>
-        </div>
-        <div id="artist-works-grid" class="masonry px-0 pt-0"></div>
-      </div>
     </div>
 
   </div><!-- /view-artist -->
@@ -992,42 +958,71 @@
     setArtistJsonLd(artist);
 
     // Hero
-    document.getElementById('artist-hero-img').src          = artist.artworks[0].image;
-    document.getElementById('artist-hero-img').alt          = artist.name;
+    const cover = artist.artworks[0];
+    document.getElementById('artist-hero-img').src = (cover && cover.image) || IMG_PLACEHOLDER;
+    document.getElementById('artist-hero-img').alt = artist.name;
     document.getElementById('artist-page-name').textContent     = artist.name;
-    document.getElementById('artist-page-location').textContent = `${artist.city}, ${artist.country}`;
-    document.getElementById('artist-page-bio').textContent      = artist.bio;
-    document.getElementById('artist-work-count').textContent    = String(artist.artworks.length).padStart(2, '0');
-    document.getElementById('artist-page-city').textContent     = `${artist.city}, ${artist.country}`;
+    document.getElementById('artist-page-location').textContent = [artist.city, artist.country].filter(Boolean).join(', ');
+    document.getElementById('artist-page-tags').innerHTML = (artist.tags || [])
+      .map(t => `<span class="chip">${t}</span>`).join('');
 
-    // Circular profile avatar + credit
-    const avatarEl = document.getElementById('artist-page-avatar');
-    const creditEl = document.getElementById('artist-avatar-credit');
-    avatarEl.style.display = '';
-    creditEl.style.display = 'none';
-    if (artist.avatar) {
-      avatarEl.src = artist.avatar;
-      avatarEl.alt = artist.name;
-    } else {
-      avatarEl.style.display = 'none';
-    }
-    if (artist.avatar_credit) {
-      document.getElementById('artist-avatar-credit-name').textContent = artist.avatar_credit;
-      creditEl.style.display = 'block';
-    }
+    // Information infobox + about
+    renderArtistInfobox(artist);
 
-    document.getElementById('artist-page-tags').innerHTML = artist.tags
-      .map(t => `<span class="chip">${t}</span>`)
-      .join('');
-
-    const mats = unique(artist.artworks.map(a => a.material));
-    document.getElementById('artist-materials').innerHTML = mats
-      .map(m => `<span class="chip-dark">${m}</span>`)
-      .join('');
-
-    // Works grid
+    // Portfolio grid
     document.getElementById('artist-works-grid').innerHTML =
       artist.artworks.map((w, i) => cardHTML({ ...w, artist }, i)).join('');
+  }
+
+  function renderArtistInfobox(artist) {
+    const rows = [];
+    const add = (label, value) => { if (value !== null && value !== undefined && value !== '') rows.push([label, value]); };
+    const linkStyle = 'color:inherit;text-decoration:underline;text-decoration-color:#C8C5BF;text-underline-offset:2px;';
+
+    add('Nationality', artist.nationality);
+    if (artist.birth_year) add('Born', artist.death_year ? `${artist.birth_year} – ${artist.death_year}` : String(artist.birth_year));
+    else if (artist.death_year) add('Died', String(artist.death_year));
+    add('Based in', [artist.city, artist.country].filter(Boolean).join(', '));
+    add('Works', artist.artworks.length || '—');
+
+    const mats = unique(artist.artworks.map(a => a.material)).filter(Boolean);
+    if (mats.length) add('Materials', mats.map(m => `<span class="chip-dark">${m}</span>`).join(' '));
+    if (Array.isArray(artist.themes) && artist.themes.length)
+      add('Themes', artist.themes.map(t => `<span class="chip-dark">${t}</span>`).join(' '));
+
+    const links = [];
+    if (artist.instagram) {
+      const url = artist.instagram.startsWith('http') ? artist.instagram : `https://instagram.com/${artist.instagram}`;
+      links.push(`<a href="${url}" target="_blank" rel="noopener noreferrer" style="${linkStyle}">Instagram ↗</a>`);
+    }
+    if (artist.wikidata_qid) links.push(`<a href="https://www.wikidata.org/wiki/${artist.wikidata_qid}" target="_blank" rel="noopener noreferrer" style="${linkStyle}">Wikidata ↗</a>`);
+    if (artist.ulan_id)      links.push(`<a href="https://vocab.getty.edu/ulan/${artist.ulan_id}" target="_blank" rel="noopener noreferrer" style="${linkStyle}">ULAN ↗</a>`);
+    if (artist.viaf_id)      links.push(`<a href="https://viaf.org/viaf/${artist.viaf_id}" target="_blank" rel="noopener noreferrer" style="${linkStyle}">VIAF ↗</a>`);
+    if (links.length) add('Links', links.join('<br>'));
+
+    const photo = artist.avatar
+      ? `<div style="border-bottom:1px solid #C8C5BF;">
+           <img src="${artist.avatar}" alt="${artist.name}" style="width:100%;display:block;object-fit:cover;max-height:360px;" onerror="this.parentElement.style.display='none'" />
+           ${artist.avatar_credit ? `<div style="padding:4px 10px;font-family:'Syne',sans-serif;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:#7A7770;">Photo: ${artist.avatar_credit}</div>` : ''}
+         </div>` : '';
+
+    const body = rows.map(([label, value]) => `
+      <tr style="border-top:1px solid #E8E4DC;">
+        <th style="text-align:left;vertical-align:top;padding:0.5rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;white-space:nowrap;font-weight:500;">${label}</th>
+        <td style="padding:0.5rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.85rem;color:#0D0D0D;">${value}</td>
+      </tr>`).join('');
+
+    document.getElementById('artist-infobox').innerHTML = `
+      <div style="border:1px solid #C8C5BF;border-radius:6px;overflow:hidden;">
+        ${photo}
+        <div style="background:#0D0D0D;color:#F2EFE9;padding:0.7rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;">${artist.name}</div>
+        <table style="width:100%;border-collapse:collapse;">${body}</table>
+      </div>`;
+
+    document.getElementById('artist-about').innerHTML = artist.bio
+      ? `<div style="font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin-bottom:0.5rem;">About</div>
+         <p style="font-family:'Syne',sans-serif;font-size:0.85rem;line-height:1.6;color:rgba(13,13,13,0.78);">${artist.bio}</p>`
+      : '';
   }
 
   // ──────────────────────────────────────────
