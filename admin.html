@@ -95,9 +95,9 @@
     <table>
       <thead>
         <tr>
-          <th>Artist</th>
-          <th>Country</th>
-          <th>City</th>
+          <th onclick="sortBy('name')" style="cursor:pointer; user-select:none;" title="Sort by artist name">Artist <span class="sort-ind" data-col="name" style="color:#7A7770;"></span></th>
+          <th onclick="sortBy('country')" style="cursor:pointer; user-select:none;" title="Sort by country">Country <span class="sort-ind" data-col="country" style="color:#7A7770;"></span></th>
+          <th onclick="sortBy('city')" style="cursor:pointer; user-select:none;" title="Sort by city">City <span class="sort-ind" data-col="city" style="color:#7A7770;"></span></th>
           <th>Born</th>
           <th>Rating</th>
           <th>Artworks</th>
@@ -529,6 +529,14 @@
     renderTable();
   }
 
+  // Column sorting (artist / country / city)
+  let sortState = { col: null, dir: 'asc' };
+  function sortBy(col) {
+    if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+    else { sortState.col = col; sortState.dir = 'asc'; }
+    renderTable();
+  }
+
   function renderTable() {
     const q = document.getElementById('search').value.toLowerCase();
     const filtered = ARTISTS.filter(a =>
@@ -537,6 +545,16 @@
       (a.country || '').toLowerCase().includes(q) ||
       (a.city || '').toLowerCase().includes(q)
     );
+
+    // sort-direction indicators on the sortable headers
+    document.querySelectorAll('.sort-ind').forEach(s => {
+      s.textContent = (s.dataset.col === sortState.col) ? (sortState.dir === 'asc' ? '▲' : '▼') : '';
+    });
+    if (sortState.col) {
+      const c = sortState.col, dir = sortState.dir === 'asc' ? 1 : -1;
+      filtered.sort((a, b) =>
+        (a[c] || '').toString().localeCompare((b[c] || '').toString(), undefined, { sensitivity: 'base' }) * dir);
+    }
 
     const tbody = document.getElementById('table-body');
     const empty = document.getElementById('empty');
