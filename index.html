@@ -1070,7 +1070,13 @@
     document.getElementById('artwork-back-label').textContent = artist.name;
 
     document.getElementById('artwork-page-title').textContent = artwork.title;
-    document.getElementById('artwork-page-meta').textContent  = `${artist.name} · ${artwork.year}`;
+    // Artist name links back to the artist page
+    document.getElementById('artwork-page-meta').innerHTML =
+      `<a href="#/artist/${artist.id}"
+          style="color:inherit; text-decoration:underline; text-decoration-color:rgba(255,255,255,0.35); text-underline-offset:3px; transition:color 0.2s;"
+          onmouseover="this.style.color='rgba(255,255,255,0.95)'"
+          onmouseout="this.style.color=''">${artist.name}</a>` +
+      (artwork.year ? ` · ${artwork.year}` : '');
 
     // Tags — material & technique belong to the artwork, not the artist
     const tags = [artwork.material, artwork.style].filter(Boolean);
