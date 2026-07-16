@@ -57,13 +57,14 @@
       </button>
 
       <nav class="flex items-center gap-8">
-        <button onclick="navigate('/')" class="nav-link">Gallery</button>
-        <button onclick="scrollToArtists()" class="nav-link">Artists</button>
-        <button class="nav-link">About</button>
+        <button onclick="navigate('/')" class="nav-link" data-i18n="nav.gallery">Gallery</button>
+        <button onclick="scrollToArtists()" class="nav-link" data-i18n="nav.artists">Artists</button>
+        <button class="nav-link" data-i18n="nav.about">About</button>
         <button class="nav-link border border-ink px-5 py-2 text-ink hover:bg-ink hover:text-parchment transition-colors duration-200"
-                style="color: #0D0D0D; border-color: #0D0D0D;">
+                style="color: #0D0D0D; border-color: #0D0D0D;" data-i18n="nav.submit">
           Submit Work
         </button>
+        <span id="lang-selector" class="flex items-center"></span>
       </nav>
 
     </div>
@@ -86,7 +87,7 @@
           <div class="max-w-screen-2xl mx-auto w-full">
 
             <div class="mb-3 fade-up">
-              <span style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.5);">
+              <span style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.5);" data-i18n="home.featured">
                 Featured Sculptor
               </span>
             </div>
@@ -108,7 +109,7 @@
                       style="font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:white; border:1px solid rgba(255,255,255,0.45); padding:0.9rem 2rem; transition: all 0.3s ease; background: transparent;"
                       onmouseover="this.style.background='rgba(255,255,255,0.12)'"
                       onmouseout="this.style.background='transparent'">
-                View Portfolio →
+                <span data-i18n="home.viewPortfolio">View Portfolio →</span>
               </button>
             </div>
 
@@ -133,21 +134,21 @@
         <div class="vdivider" style="height:16px;"></div>
 
         <div class="flex items-center gap-2.5" style="flex-shrink:0;">
-          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;">Material</span>
+          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;" data-i18n="filter.material">Material</span>
           <div id="filter-material" class="flex gap-1.5"></div>
         </div>
 
         <div class="vdivider" style="height:16px;"></div>
 
         <div class="flex items-center gap-2.5" style="flex-shrink:0;">
-          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;">Country</span>
+          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;" data-i18n="filter.country">Country</span>
           <div id="filter-country" class="flex gap-1.5"></div>
         </div>
 
         <div class="vdivider" style="height:16px;"></div>
 
         <div class="flex items-center gap-2.5" style="flex-shrink:0;">
-          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;">Style</span>
+          <span style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#7A7770; flex-shrink:0;" data-i18n="filter.style">Style</span>
           <div id="filter-style" class="flex gap-1.5"></div>
         </div>
 
@@ -161,7 +162,7 @@
       <div id="no-results"
            class="hidden text-center py-32 font-display text-4xl italic"
            style="color:#7A7770;">
-        No works found.
+        <span data-i18n="home.noWorks">No works found.</span>
       </div>
     </main>
 
@@ -175,7 +176,7 @@
         <div class="flex items-end justify-between mb-14"
              style="border-bottom: 1px solid #C8C5BF; padding-bottom: 1.25rem;">
           <h2 class="font-display font-light" style="font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.04em;">
-            Our Sculptors
+            <span data-i18n="home.ourSculptors">Our Sculptors</span>
           </h2>
           <span id="artists-count" style="font-family:'Syne',sans-serif; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#7A7770;">
           </span>
@@ -213,7 +214,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M19 12H5M5 12L12 19M5 12L12 5"/>
               </svg>
-              Back to Gallery
+              <span data-i18n="artist.backToGallery">Back to Gallery</span>
             </button>
           </div>
 
@@ -249,7 +250,7 @@
       <section class="artist-portfolio">
         <h2 class="font-display font-light"
             style="font-size:1.75rem; letter-spacing:0.05em; border-bottom:1px solid #C8C5BF; padding-bottom:1rem; margin-bottom:1.25rem;">
-          Portfolio
+          <span data-i18n="artist.portfolio">Portfolio</span>
         </h2>
         <div id="artist-works-grid"></div>
       </section>
@@ -287,7 +288,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M19 12H5M5 12L12 19M5 12L12 5"/>
               </svg>
-              Back to <span id="artwork-back-label"></span>
+              <span id="artwork-back-label"></span>
             </button>
           </div>
 
@@ -334,7 +335,7 @@
                style="width:52px;height:52px;border-radius:9999px;object-fit:cover;border:1px solid #C8C5BF;display:block;"
                onerror="this.style.display='none'" />
           <div>
-            <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.25rem;">Sculpted by</div>
+            <div style="font-family:'Syne',sans-serif; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#7A7770; margin-bottom:0.25rem;" data-i18n="artwork.sculptedBy">Sculpted by</div>
             <div id="artwork-artist-name" class="font-display font-light" style="font-size:1.4rem;"></div>
           </div>
         </div>
@@ -352,7 +353,7 @@
         <div style="padding: 2.5rem 1.5rem 1.5rem;">
           <h2 class="font-display font-light"
               style="font-size:1.75rem; letter-spacing:0.05em; border-bottom:1px solid #C8C5BF; padding-bottom:1rem;">
-            More by <span id="artwork-more-artist-name"></span>
+            <span id="artwork-more-artist-name"></span>
           </h2>
         </div>
         <div id="artwork-more-grid" class="masonry px-0 pt-0"></div>
@@ -452,13 +453,14 @@
     const node = {
       '@context': 'https://schema.org',
       '@type': 'VisualArtwork',
+      inLanguage: LANG,
       name: artwork.title,
       artform: artwork.object_type_aat_uri || 'Sculpture',
       artMedium: artwork.material,
       dateCreated: String(artwork.year),
       image: artwork.image,
       description: artwork.description || undefined,
-      url: SITE_URL + '/#/artist/' + artist.id + '/' + slugify(artwork.title),
+      url: SITE_URL + '/#/artist/' + artist.id + '/' + (artwork.slug || slugify(artwork.title)),
       creator: {
         '@type': 'Person',
         '@id': SITE_URL + '/#artist-' + artist.id,
@@ -515,42 +517,42 @@
     // Object type (label from AAT, linked)
     if (w.object_type_aat_uri) {
       const lbl = aatLabel(w.object_type_aat_uri) || 'Sculpture';
-      add('Type', aatLink(w.object_type_aat_uri, lbl.charAt(0).toUpperCase() + lbl.slice(1)));
+      add(t('info.type'), aatLink(w.object_type_aat_uri, lbl.charAt(0).toUpperCase() + lbl.slice(1)));
     }
-    add('Artist', `<a href="#/artist/${artist.id}" style="color:inherit;text-decoration:underline;text-decoration-color:#C8C5BF;text-underline-offset:2px;">${artist.name}</a>`);
-    add('Year', w.year);
+    add(t('info.artist'), `<a href="#/artist/${artist.id}" style="color:inherit;text-decoration:underline;text-decoration-color:#C8C5BF;text-underline-offset:2px;">${artist.name}</a>`);
+    add(t('info.year'), w.year);
 
     // Material — free-text label, with AAT crosswalk link if present
     if (w.material) {
-      add('Material', w.material_aat_uri
-        ? `${w.material} <span style="color:#7A7770;">· ${aatLink(w.material_aat_uri, 'AAT')}</span>`
-        : w.material);
+      add(t('info.material'), w.material_aat_uri
+        ? `${vocabLabel(w.material)} <span style="color:#7A7770;">· ${aatLink(w.material_aat_uri, 'AAT')}</span>`
+        : vocabLabel(w.material));
     }
-    if (w.technique_aat_uri) add('Technique', aatLink(w.technique_aat_uri));
-    if (w.style) add('Style', w.style);
+    if (w.technique_aat_uri) add(t('info.technique'), aatLink(w.technique_aat_uri));
+    if (w.style) add(t('info.style'), vocabLabel(w.style));
 
     // Dimensions
     if (w.height_cm || w.width_cm || w.depth_cm) {
       const fmt = d => (d || d === 0) ? String(d) : '?';
-      add('Dimensions', `${fmt(w.height_cm)} × ${fmt(w.width_cm)} × ${fmt(w.depth_cm)} cm <span style="color:#7A7770;">(h × w × d)</span>`);
+      add(t('info.dimensions'), `${fmt(w.height_cm)} × ${fmt(w.width_cm)} × ${fmt(w.depth_cm)} cm <span style="color:#7A7770;">${t('info.dimsHint')}</span>`);
     }
-    if (w.weight_kg)      add('Weight', `${w.weight_kg} kg`);
-    if (w.base_height_cm) add('Base height', `${w.base_height_cm} cm`);
+    if (w.weight_kg)      add(t('info.weight'), `${w.weight_kg} kg`);
+    if (w.base_height_cm) add(t('info.baseHeight'), `${w.base_height_cm} cm`);
 
     // Edition & casting
     if (w.edition_size || w.edition_number) {
-      add('Edition', w.edition_number
-        ? (w.edition_size ? `${w.edition_number} of ${w.edition_size}` : w.edition_number)
-        : `Edition of ${w.edition_size}`);
+      add(t('info.edition'), w.edition_number
+        ? (w.edition_size ? t('info.editionNumOf', { num: w.edition_number, size: w.edition_size }) : w.edition_number)
+        : t('info.editionOf', { n: w.edition_size }));
     }
-    add('Foundry',    w.foundry);
-    add('Cast',       w.cast_date);
-    add('Patination', w.patination);
+    add(t('info.foundry'),    w.foundry);
+    add(t('info.cast'),       w.cast_date);
+    add(t('info.patination'), w.patination);
 
     // Governance
-    add('Location', w.location_country);
-    add('License',  w.license);
-    if (w.wikidata_qid) add('Wikidata', aatLink('https://www.wikidata.org/wiki/' + w.wikidata_qid, w.wikidata_qid));
+    add(t('info.location'), w.location_country);
+    add(t('info.license'),  w.license);
+    if (w.wikidata_qid) add(t('info.wikidata'), aatLink('https://www.wikidata.org/wiki/' + w.wikidata_qid, w.wikidata_qid));
 
     const box = document.getElementById('artwork-infobox');
     const body = rows.map(([label, value]) => `
@@ -560,7 +562,7 @@
       </tr>`).join('');
     box.innerHTML = `
       <div style="border:1px solid #C8C5BF;border-radius:6px;overflow:hidden;">
-        <div style="background:#0D0D0D;color:#F2EFE9;padding:0.7rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;">${w.title || 'Details'}</div>
+        <div style="background:#0D0D0D;color:#F2EFE9;padding:0.7rem 0.75rem;font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;">${w.title || t('info.details')}</div>
         <table style="width:100%;border-collapse:collapse;">${body}</table>
       </div>`;
   }
@@ -677,6 +679,113 @@
   function onImgError(el) { el.src = IMG_PLACEHOLDER; }
 
   // ──────────────────────────────────────────
+  // I18N
+  // ──────────────────────────────────────────
+  const DEFAULT_LANG = 'en';
+  let LANGUAGES = [{ code: 'en', label: 'English', short_label: 'EN' }]; // replaced from DB
+  let VOCAB = {};   // lowercase term -> label in the active language
+
+  function detectLang() {
+    const saved = localStorage.getItem('lisculpt_lang');
+    if (saved) return saved;
+    return (navigator.language || 'en').toLowerCase().startsWith('pt') ? 'pt-BR' : DEFAULT_LANG;
+  }
+  let LANG = detectLang();
+
+  const I18N = {
+    'en': {
+      'site.title': 'Lisculpt — Sculpture Portfolio Platform',
+      'nav.gallery': 'Gallery', 'nav.artists': 'Artists', 'nav.about': 'About', 'nav.submit': 'Submit Work',
+      'home.featured': 'Featured Sculptor', 'home.viewPortfolio': 'View Portfolio →',
+      'home.artistCount_one': '— {n} Artist', 'home.artistCount_other': '— {n} Artists',
+      'filter.material': 'Material', 'filter.country': 'Country', 'filter.style': 'Style', 'filter.all': 'All',
+      'artist.backToGallery': 'Back to Gallery', 'artist.portfolio': 'Portfolio', 'artist.about': 'About',
+      'artist.cta_none': 'See this artwork',
+      'artist.cta_one': 'See this artwork ({n} image)', 'artist.cta_other': 'See this artwork ({n} images)',
+      'artwork.backTo': 'Back to {name}', 'artwork.moreBy': 'More by {name}',
+      'artwork.sculptedBy': 'Sculpted by', 'artwork.video': 'Video',
+      'info.details': 'Details',
+      'info.type': 'Type', 'info.artist': 'Artist', 'info.year': 'Year', 'info.material': 'Material',
+      'info.technique': 'Technique', 'info.style': 'Style', 'info.dimensions': 'Dimensions',
+      'info.dimsHint': '(h × w × d)', 'info.weight': 'Weight', 'info.baseHeight': 'Base height',
+      'info.edition': 'Edition', 'info.editionOf': 'Edition of {n}', 'info.editionNumOf': '{num} of {size}',
+      'info.foundry': 'Foundry', 'info.cast': 'Cast', 'info.patination': 'Patination',
+      'info.location': 'Location', 'info.license': 'License', 'info.wikidata': 'Wikidata',
+      'info.nationality': 'Nationality', 'info.born': 'Born', 'info.died': 'Died', 'info.basedIn': 'Based in',
+      'info.works': 'Works', 'info.materials': 'Materials', 'info.themes': 'Themes', 'info.links': 'Links',
+      'info.photoCredit': 'Photo: {name}',
+      'home.ourSculptors': 'Our Sculptors', 'home.noWorks': 'No works found.',
+      'error.load': 'Could not load sculptor data.',
+    },
+    'pt-BR': {
+      'site.title': 'Lisculpt — Plataforma de Portfólio de Escultura',
+      'nav.gallery': 'Galeria', 'nav.artists': 'Artistas', 'nav.about': 'Sobre', 'nav.submit': 'Enviar obra',
+      'home.featured': 'Escultor em destaque', 'home.viewPortfolio': 'Ver portfólio →',
+      'home.artistCount_one': '— {n} Artista', 'home.artistCount_other': '— {n} Artistas',
+      'filter.material': 'Material', 'filter.country': 'País', 'filter.style': 'Estilo', 'filter.all': 'Todos',
+      'artist.backToGallery': 'Voltar à galeria', 'artist.portfolio': 'Portfólio', 'artist.about': 'Sobre',
+      'artist.cta_none': 'Ver esta obra',
+      'artist.cta_one': 'Ver esta obra ({n} imagem)', 'artist.cta_other': 'Ver esta obra ({n} imagens)',
+      'artwork.backTo': 'Voltar para {name}', 'artwork.moreBy': 'Mais de {name}',
+      'artwork.sculptedBy': 'Escultura de', 'artwork.video': 'Vídeo',
+      'info.details': 'Detalhes',
+      'info.type': 'Tipo', 'info.artist': 'Artista', 'info.year': 'Ano', 'info.material': 'Material',
+      'info.technique': 'Técnica', 'info.style': 'Estilo', 'info.dimensions': 'Dimensões',
+      'info.dimsHint': '(a × l × p)', 'info.weight': 'Peso', 'info.baseHeight': 'Altura da base',
+      'info.edition': 'Edição', 'info.editionOf': 'Edição de {n}', 'info.editionNumOf': '{num} de {size}',
+      'info.foundry': 'Fundição', 'info.cast': 'Fundido em', 'info.patination': 'Pátina',
+      'info.location': 'Localização', 'info.license': 'Licença', 'info.wikidata': 'Wikidata',
+      'info.nationality': 'Nacionalidade', 'info.born': 'Nascimento', 'info.died': 'Falecimento',
+      'info.basedIn': 'Reside em', 'info.works': 'Obras', 'info.materials': 'Materiais',
+      'info.themes': 'Temas', 'info.links': 'Links', 'info.photoCredit': 'Foto: {name}',
+      'home.ourSculptors': 'Nossos escultores', 'home.noWorks': 'Nenhuma obra encontrada.',
+      'error.load': 'Não foi possível carregar os dados.',
+    },
+  };
+
+  function t(key, vars) {
+    const dict = I18N[LANG] || I18N[DEFAULT_LANG];
+    let s = (dict && dict[key]) || I18N[DEFAULT_LANG][key] || key;
+    if (vars) for (const k in vars) s = s.split('{' + k + '}').join(vars[k]);
+    return s;
+  }
+  // plural helper: en/pt-BR both use one/other
+  function tn(baseKey, n, vars) {
+    return t(`${baseKey}_${n === 1 ? 'one' : 'other'}`, Object.assign({ n }, vars || {}));
+  }
+  // vocabulary term -> localized label (falls back to the stored original)
+  function vocabLabel(term) {
+    if (!term) return term;
+    return VOCAB[String(term).trim().toLowerCase()] || term;
+  }
+
+  function applyStaticI18n() {
+    document.documentElement.lang = LANG;
+    document.title = t('site.title');
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  }
+
+  function renderLangSelector() {
+    const el = document.getElementById('lang-selector');
+    if (!el) return;
+    el.innerHTML = LANGUAGES.map(l =>
+      `<button onclick="switchLang('${l.code}')" title="${l.label}" aria-label="${l.label}"
+         style="background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.62rem;letter-spacing:0.14em;padding:0 3px;
+                color:${l.code === LANG ? '#0D0D0D' : '#7A7770'};font-weight:${l.code === LANG ? '600' : '400'};">${l.short_label}</button>`
+    ).join('<span style="color:#C8C5BF;font-size:0.6rem;">·</span>');
+  }
+
+  async function switchLang(code) {
+    if (code === LANG) return;
+    LANG = code;
+    localStorage.setItem('lisculpt_lang', code);
+    applyStaticI18n();
+    renderLangSelector();
+    try { DATA = await loadData(); } catch (e) { console.error(e); }
+    handleRoute();
+  }
+
+  // ──────────────────────────────────────────
   // SUPABASE CLIENT
   // ──────────────────────────────────────────
   const SUPABASE_URL  = 'https://bhkggorcvcpnttbztdod.supabase.co';
@@ -700,13 +809,46 @@
       .order('id', { ascending: true });
     if (wErr) throw wErr;
 
+    // i18n: supported languages, vocabulary labels, and prose translations
+    const langs = [LANG, DEFAULT_LANG];
+    const [langRes, vocabRes, aTrRes, wTrRes] = await Promise.all([
+      sb.from('languages').select('*').eq('enabled', true).order('sort_order'),
+      sb.from('vocab_labels').select('term_key,label').eq('lang', LANG),
+      sb.from('artist_translations').select('artist_id,lang,bio').in('lang', langs),
+      sb.from('artwork_translations').select('artwork_id,lang,title,description').in('lang', langs),
+    ]);
+    if (langRes.data && langRes.data.length) LANGUAGES = langRes.data;
+
+    VOCAB = {};
+    (vocabRes.data || []).forEach(r => { VOCAB[r.term_key] = r.label; });
+
+    // translation maps: id -> { lang -> row }
+    const aTr = {}, wTr = {};
+    (aTrRes.data || []).forEach(r => { (aTr[r.artist_id] = aTr[r.artist_id] || {})[r.lang] = r; });
+    (wTrRes.data || []).forEach(r => { (wTr[r.artwork_id] = wTr[r.artwork_id] || {})[r.lang] = r; });
+    // active language -> English -> stored original
+    const pick = (map, id, field, fallback) => {
+      const m = map[id] || {};
+      return (m[LANG] && m[LANG][field]) || (m[DEFAULT_LANG] && m[DEFAULT_LANG][field]) || fallback;
+    };
+
     const artworksByArtist = {};
     for (const w of artworks) {
-      (artworksByArtist[w.artist_id] = artworksByArtist[w.artist_id] || []).push(w);
+      const localized = {
+        ...w,
+        slug:        slugify(w.title),   // stable route slug from the ORIGINAL title
+        title:       pick(wTr, w.id, 'title', w.title),
+        description: pick(wTr, w.id, 'description', w.description),
+      };
+      (artworksByArtist[w.artist_id] = artworksByArtist[w.artist_id] || []).push(localized);
     }
 
     return {
-      artists: artists.map(a => ({ ...a, artworks: artworksByArtist[a.id] || [] }))
+      artists: artists.map(a => ({
+        ...a,
+        bio: pick(aTr, a.id, 'bio', a.bio),
+        artworks: artworksByArtist[a.id] || [],
+      }))
     };
   }
 
@@ -758,13 +900,16 @@
   window.addEventListener('hashchange', handleRoute);
 
   window.addEventListener('DOMContentLoaded', async () => {
+    applyStaticI18n();
     try {
       DATA = await loadData();
+      renderLangSelector();
+      applyStaticI18n();
       handleRoute();
     } catch (err) {
       console.error('Failed to load data from Supabase:', err);
       document.getElementById('view-home').innerHTML =
-        '<p style="padding:4rem;font-family:Syne,sans-serif;color:#7A7770;">Could not load sculptor data.</p>';
+        '<p style="padding:4rem;font-family:Syne,sans-serif;color:#7A7770;">' + t('error.load') + '</p>';
     }
   });
 
@@ -896,13 +1041,13 @@
     const videoBadge = isVid ? `
       <div class="video-badge">
         <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        <span style="font-family:'Syne',sans-serif;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.8);">Video</span>
+        <span style="font-family:'Syne',sans-serif;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.8);">${t('artwork.video')}</span>
       </div>` : '';
 
     return `
       <div class="masonry-item">
         <div class="artwork-card"
-             onclick="navigate('/artist/${w.artist.id}/${slugify(w.title)}')"
+             onclick="navigate('/artist/${w.artist.id}/${w.slug || slugify(w.title)}')"
              onmouseover="hoverCard(this,true)"
              onmouseout="hoverCard(this,false)">
           <div class="card-index">${num}</div>
@@ -916,7 +1061,7 @@
               ${w.title}
             </div>
             <div style="display:flex;align-items:center;gap:10px;">
-              <span style="font-family:'Syne',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.45);">${w.material}</span>
+              <span style="font-family:'Syne',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.45);">${vocabLabel(w.material)}</span>
               <span style="color:rgba(255,255,255,0.25);font-size:0.6rem;">·</span>
               <span style="font-family:'Syne',sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.45);">${w.year}</span>
             </div>
@@ -938,7 +1083,7 @@
   // ──────────────────────────────────────────
   function renderArtistsList() {
     const n = DATA.artists.length;
-    document.getElementById('artists-count').textContent = `— ${n} Artist${n !== 1 ? 's' : ''}`;
+    document.getElementById('artists-count').textContent = tn('home.artistCount', n);
     document.getElementById('artists-list').innerHTML = DATA.artists.map((a, i) => `
       <div class="artist-card cursor-pointer" onclick="navigate('/artist/${a.id}')">
         <div style="overflow:hidden;margin-bottom:1rem;aspect-ratio:4/5;">
@@ -947,7 +1092,7 @@
         <div class="font-display" style="font-size:1.2rem;font-weight:300;margin-bottom:3px;">${a.name}</div>
         <div style="font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:#7A7770;margin-bottom:8px;">${a.city}</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;">
-          ${a.tags.map(t => `<span class="chip-dark">${t}</span>`).join('')}
+          ${(a.tags || []).map(x => `<span class="chip-dark">${vocabLabel(x)}</span>`).join('')}
         </div>
       </div>
     `).join('');
@@ -973,7 +1118,7 @@
     document.getElementById('artist-page-name').textContent     = artist.name;
     document.getElementById('artist-page-location').textContent = [artist.city, artist.country].filter(Boolean).join(', ');
     document.getElementById('artist-page-tags').innerHTML = (artist.tags || [])
-      .map(t => `<span class="chip">${t}</span>`).join('');
+      .map(x => `<span class="chip">${vocabLabel(x)}</span>`).join('');
 
     // Hero CTA → the work currently featured in the hero (the cover)
     const ctaEl = document.getElementById('artist-hero-cta');
@@ -981,8 +1126,8 @@
       const imgs = [cover.image, ...(Array.isArray(cover.views) ? cover.views : [])].filter(Boolean);
       const count = new Set(imgs).size;
       document.getElementById('artist-hero-cta-text').textContent =
-        count > 0 ? `See this artwork (${count} image${count === 1 ? '' : 's'})` : 'See this artwork';
-      ctaEl.href = `#/artist/${artist.id}/${slugify(cover.title)}`;
+        count > 0 ? tn('artist.cta', count) : t('artist.cta_none');
+      ctaEl.href = `#/artist/${artist.id}/${cover.slug || slugify(cover.title)}`;
       ctaEl.style.display = 'inline-flex';
     } else {
       ctaEl.style.display = 'none';
@@ -1001,16 +1146,16 @@
     const add = (label, value) => { if (value !== null && value !== undefined && value !== '') rows.push([label, value]); };
     const linkStyle = 'color:inherit;text-decoration:underline;text-decoration-color:#C8C5BF;text-underline-offset:2px;';
 
-    add('Nationality', artist.nationality);
-    if (artist.birth_year) add('Born', artist.death_year ? `${artist.birth_year} – ${artist.death_year}` : String(artist.birth_year));
-    else if (artist.death_year) add('Died', String(artist.death_year));
-    add('Based in', [artist.city, artist.country].filter(Boolean).join(', '));
-    add('Works', artist.artworks.length || '—');
+    add(t('info.nationality'), artist.nationality);
+    if (artist.birth_year) add(t('info.born'), artist.death_year ? `${artist.birth_year} – ${artist.death_year}` : String(artist.birth_year));
+    else if (artist.death_year) add(t('info.died'), String(artist.death_year));
+    add(t('info.basedIn'), [artist.city, artist.country].filter(Boolean).join(', '));
+    add(t('info.works'), artist.artworks.length || '—');
 
     const mats = unique(artist.artworks.map(a => a.material)).filter(Boolean);
-    if (mats.length) add('Materials', mats.map(m => `<span class="chip-dark">${m}</span>`).join(' '));
+    if (mats.length) add(t('info.materials'), mats.map(m => `<span class="chip-dark">${vocabLabel(m)}</span>`).join(' '));
     if (Array.isArray(artist.themes) && artist.themes.length)
-      add('Themes', artist.themes.map(t => `<span class="chip-dark">${t}</span>`).join(' '));
+      add(t('info.themes'), artist.themes.map(x => `<span class="chip-dark">${vocabLabel(x)}</span>`).join(' '));
 
     const links = [];
     if (artist.instagram) {
@@ -1020,12 +1165,12 @@
     if (artist.wikidata_qid) links.push(`<a href="https://www.wikidata.org/wiki/${artist.wikidata_qid}" target="_blank" rel="noopener noreferrer" style="${linkStyle}">Wikidata ↗</a>`);
     if (artist.ulan_id)      links.push(`<a href="https://vocab.getty.edu/ulan/${artist.ulan_id}" target="_blank" rel="noopener noreferrer" style="${linkStyle}">ULAN ↗</a>`);
     if (artist.viaf_id)      links.push(`<a href="https://viaf.org/viaf/${artist.viaf_id}" target="_blank" rel="noopener noreferrer" style="${linkStyle}">VIAF ↗</a>`);
-    if (links.length) add('Links', links.join('<br>'));
+    if (links.length) add(t('info.links'), links.join('<br>'));
 
     const photo = artist.avatar
       ? `<div style="border-bottom:1px solid #C8C5BF;">
            <img src="${artist.avatar}" alt="${artist.name}" style="width:100%;display:block;object-fit:cover;max-height:360px;" onerror="this.parentElement.style.display='none'" />
-           ${artist.avatar_credit ? `<div style="padding:4px 10px;font-family:'Syne',sans-serif;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:#7A7770;">Photo: ${artist.avatar_credit}</div>` : ''}
+           ${artist.avatar_credit ? `<div style="padding:4px 10px;font-family:'Syne',sans-serif;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:#7A7770;">${t('info.photoCredit', { name: artist.avatar_credit })}</div>` : ''}
          </div>` : '';
 
     const body = rows.map(([label, value]) => `
@@ -1042,7 +1187,7 @@
       </div>`;
 
     document.getElementById('artist-about').innerHTML = artist.bio
-      ? `<div style="font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin-bottom:0.5rem;">About</div>
+      ? `<div style="font-family:'Syne',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin-bottom:0.5rem;">${t('artist.about')}</div>
          <p style="font-family:'Syne',sans-serif;font-size:0.85rem;line-height:1.6;color:rgba(13,13,13,0.78);">${artist.bio}</p>`
       : '';
   }
@@ -1054,7 +1199,7 @@
     const artist = DATA.artists.find(a => a.id === artistId);
     if (!artist) { navigate('/'); return; }
 
-    const artwork = artist.artworks.find(w => slugify(w.title) === artworkSlug);
+    const artwork = artist.artworks.find(w => (w.slug || slugify(w.title)) === artworkSlug);
     if (!artwork) { navigate(`/artist/${artistId}`); return; }
 
     document.getElementById('view-home').classList.add('hidden');
@@ -1067,7 +1212,7 @@
     initArtworkGallery(artwork);
 
     document.getElementById('artwork-back-btn').onclick = () => navigate(`/artist/${artist.id}`);
-    document.getElementById('artwork-back-label').textContent = artist.name;
+    document.getElementById('artwork-back-label').textContent = t('artwork.backTo', { name: artist.name });
 
     document.getElementById('artwork-page-title').textContent = artwork.title;
     // Artist name links back to the artist page
@@ -1079,7 +1224,7 @@
       (artwork.year ? ` · ${artwork.year}` : '');
 
     // Tags — material & technique belong to the artwork, not the artist
-    const tags = [artwork.material, artwork.style].filter(Boolean);
+    const tags = [artwork.material, artwork.style].filter(Boolean).map(vocabLabel);
     document.getElementById('artwork-page-tags').innerHTML = tags
       .map(t => `<span class="chip">${t}</span>`)
       .join('');
@@ -1102,7 +1247,7 @@
     renderArtworkInfobox(artist, artwork);
 
     // More by this artist
-    document.getElementById('artwork-more-artist-name').textContent = artist.name;
+    document.getElementById('artwork-more-artist-name').textContent = t('artwork.moreBy', { name: artist.name });
     const others = artist.artworks.filter(w => w.id !== artwork.id);
     document.getElementById('artwork-more-grid').innerHTML =
       others.map((w, i) => cardHTML({ ...w, artist }, i)).join('');

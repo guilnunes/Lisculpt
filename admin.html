@@ -169,8 +169,12 @@
       </div>
 
       <div class="field">
-        <label>Bio</label>
+        <label>Bio — English</label>
         <textarea id="f-bio"></textarea>
+      </div>
+      <div class="field">
+        <label>Bio — Português (BR) <span style="text-transform:none;letter-spacing:0;color:#9a978f;">— falls back to English if empty</span></label>
+        <textarea id="f-bio-pt"></textarea>
       </div>
 
       <div class="field">
@@ -315,7 +319,11 @@
         </select>
       </div>
       <div class="field"><label>Video URL</label><input type="text" id="w-video" /></div>
-      <div class="field"><label>Description</label><textarea id="w-description"></textarea></div>
+      <div class="field"><label>Description — English</label><textarea id="w-description"></textarea></div>
+      <div class="field">
+        <label>Description — Português (BR) <span style="text-transform:none;letter-spacing:0;color:#9a978f;">— falls back to English if empty</span></label>
+        <textarea id="w-description-pt"></textarea>
+      </div>
 
       <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#7A7770;margin:0.5rem 0;border-top:1px solid #C8C5BF;padding-top:1rem;">Dimensions</div>
       <div class="grid2">
@@ -632,6 +640,11 @@
     document.getElementById('f-birth-year').value  = a ? (a.birth_year || '') : '';
     document.getElementById('f-death-year').value  = a ? (a.death_year || '') : '';
     document.getElementById('f-bio').value         = a ? (a.bio || '') : '';
+    document.getElementById('f-bio-pt').value      = '';
+    if (a) loadTr('artist_translations', 'artist_id', a.id, 'bio').then(m => {
+      document.getElementById('f-bio').value    = (m['en'] && m['en'].bio) || a.bio || '';
+      document.getElementById('f-bio-pt').value = (m['pt-BR'] && m['pt-BR'].bio) || '';
+    });
     document.getElementById('f-avatar').value      = a ? (a.avatar || '') : '';
     document.getElementById('f-tags').value        = a ? (a.tags || []).join(', ') : '';
     document.getElementById('f-materials').value   = a ? (a.materials || []).join(', ') : '';
@@ -707,6 +720,10 @@
     btn.disabled = false;
 
     if (error) { toast('Save failed: ' + error.message, true); return; }
+
+    // per-language bios (artists.bio keeps the English text as fallback)
+    await saveTr('artist_translations', 'artist_id', id, 'en',    { bio: document.getElementById('f-bio').value.trim() });
+    await saveTr('artist_translations', 'artist_id', id, 'pt-BR', { bio: document.getElementById('f-bio-pt').value.trim() });
 
     toast(isNew ? 'Artist created' : 'Artist updated');
     closeModal();
@@ -846,6 +863,11 @@
     setV('w-image', w && w.image);
     setV('w-video', w && w.video);
     setV('w-description', w && w.description);
+    setV('w-description-pt', '');
+    if (w) loadTr('artwork_translations', 'artwork_id', w.id, 'title,description').then(m => {
+      document.getElementById('w-description').value    = (m['en'] && m['en'].description) || w.description || '';
+      document.getElementById('w-description-pt').value = (m['pt-BR'] && m['pt-BR'].description) || '';
+    });
     setV('w-width', w && w.width_cm);
     setV('w-height', w && w.height_cm);
     setV('w-depth', w && w.depth_cm);
@@ -966,6 +988,10 @@
     btn.textContent = 'Save'; btn.disabled = false;
 
     if (error) { toast('Save failed: ' + error.message, true); return; }
+    // per-language descriptions (artworks.description keeps the English text as fallback)
+    await saveTr('artwork_translations', 'artwork_id', id, 'en',    { description: document.getElementById('w-description').value.trim() });
+    await saveTr('artwork_translations', 'artwork_id', id, 'pt-BR', { description: document.getElementById('w-description-pt').value.trim() });
+
     toast(isNew ? 'Artwork created' : 'Artwork updated');
     closeArtworkModal();
     await loadGallery();
@@ -1106,6 +1132,25 @@
     }
     status.textContent = `Added ${done} photo(s)`;
     e.target.value = '';
+  }
+
+  // ── Translations (artist_translations / artwork_translations) ──
+  async function loadTr(table, idCol, id, fields) {
+    const m = {};
+    if (!id) return m;
+    const { data } = await sb.from(table).select(`lang,${fields}`).eq(idCol, id);
+    (data || []).forEach(r => { m[r.lang] = r; });
+    return m;
+  }
+  // upsert a language row, or delete it when the text is cleared
+  async function saveTr(table, idCol, id, lang, row) {
+    const empty = Object.values(row).every(v => !v);
+    if (empty) {
+      await sb.from(table).delete().eq(idCol, id).eq('lang', lang);
+      return;
+    }
+    const { error } = await sb.from(table).upsert(Object.assign({ [idCol]: id, lang }, row));
+    if (error) toast('Translation save failed: ' + error.message, true);
   }
 
   // ── Toast ─────────────────────────────────
