@@ -1,0 +1,90 @@
+name: Deploy to HostGator
+
+# Publishes the static site to HostGator (public_html) on every push to main.
+#
+# Only the four things the site actually needs are uploaded:
+#   index.html, admin.html, style.css, images/
+# The repo's internal files (pipeline/, research doc, sculptors.json, list.html,
+# README, .github, .claude) are deliberately NOT published.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   HOSTGATOR_FTP_SERVER    e.g. ftp.yourdomain.com   (or the server IP)
+#   HOSTGATOR_FTP_USERNAME  the cPanel/FTP account user
+#   HOSTGATOR_FTP_PASSWORD  that account's password
+# Optional:
+#   HOSTGATOR_FTP_DIR       remote target dir (default: /public_html)
+#
+# Note: this mirrors files *up* and never deletes remote files, so it cannot
+# wipe anything else living in public_html (.htaccess, cgi-bin, other apps).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'admin.html'
+      - 'style.css'
+      - 'images/**'
+      - '.github/workflows/deploy-hostgator.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-hostgator
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets are configured
+        env:
+          FTP_SERVER: ${{ secrets.HOSTGATOR_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.HOSTGATOR_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.HOSTGATOR_FTP_PASSWORD }}
+        run: |
+          missing=0
+          for v in FTP_SERVER FTP_USERNAME FTP_PASSWORD; do
+            if [ -z "${!v}" ]; then echo "::error::Missing secret HOSTGATOR_$v"; missing=1; fi
+          done
+          [ "$missing" = "0" ] || exit 1
+
+      - name: Stage the public web files
+        run: |
+          set -euo pipefail
+          rm -rf deploy && mkdir -p deploy/images
+          cp index.html admin.html style.css deploy/
+          # images/ minus the placeholder keep-file
+          if [ -d images ]; then
+            cp -r images/. deploy/images/
+            rm -f deploy/images/.gitkeep
+          fi
+          echo "Files to publish:"
+          find deploy -type f | sed 's|^deploy/|  |' | sort
+
+      - name: Upload to HostGator over FTPS
+        env:
+          FTP_SERVER: ${{ secrets.HOSTGATOR_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.HOSTGATOR_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.HOSTGATOR_FTP_PASSWORD }}
+          FTP_DIR: ${{ secrets.HOSTGATOR_FTP_DIR }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y lftp >/dev/null
+          REMOTE="${FTP_DIR:-/public_html}"
+          echo "Publishing to ${REMOTE}"
+          # Explicit FTPS. Shared hosts often present a cert for the server
+          # hostname rather than the domain, so cert verification is relaxed;
+          # the session is still encrypted.
+          lftp -c "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set net:max-retries 3;
+            set net:timeout 20;
+            open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
+            mirror --reverse --verbose --no-perms --parallel=2 ./deploy/ '${REMOTE}/';
+            bye;
+          "
+          echo "Done."
