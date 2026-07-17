@@ -54,19 +54,19 @@ jobs:
         env:
           FTP_SERVER: ${{ secrets.HOSTGATOR_FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.HOSTGATOR_FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.HOSTGATOR_FTP_PASSWORD }}
+          LFTP_PASSWORD: ${{ secrets.HOSTGATOR_FTP_PASSWORD }}   # read by lftp --env-password (safe for special chars)
           FTP_DIR: ${{ secrets.HOSTGATOR_FTP_DIR }}
         run: |
           sudo apt-get update -qq && sudo apt-get install -y lftp >/dev/null
           REMOTE="${FTP_DIR:-/public_html}"
-          echo "Connecting to ${FTP_SERVER} as ${FTP_USERNAME} …"
-          lftp -c "
+          echo "Connecting to '${FTP_SERVER}' as '${FTP_USERNAME}' …"
+          # Credentials are passed via lftp args / env, never interpolated into the script string.
+          lftp -u "$FTP_USERNAME" --env-password "$FTP_SERVER" -e "
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ssl:verify-certificate no;
             set net:max-retries 2;
             set net:timeout 20;
-            open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
             echo '=== Login lands in ===';
             pwd;
             echo;
@@ -75,7 +75,8 @@ jobs:
             echo;
             echo '=== Resolved deploy target: ${REMOTE} ===';
             cls -la '${REMOTE}';
-          " || echo "::warning::Could not list '${REMOTE}'. Either the connection failed, or that folder does not exist for this FTP account. If the landing directory above already contains your site (index.html, cgi-bin), set HOSTGATOR_FTP_DIR to '/'. See the output above to choose the right target."
+            bye;
+          " || echo "::warning::Login or listing failed. 530 = wrong FTP username/password (for a cPanel-created FTP account the username is the FULL 'user@yourdomain.com'). If it connected but the target was missing and the landing dir already holds your site, set HOSTGATOR_FTP_DIR to '/'."
           echo "Reminder: files upload INTO the resolved target. Success = target ends up with index.html, admin.html, style.css, images/."
 
       - name: Stage the public web files
@@ -95,7 +96,7 @@ jobs:
         env:
           FTP_SERVER: ${{ secrets.HOSTGATOR_FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.HOSTGATOR_FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.HOSTGATOR_FTP_PASSWORD }}
+          LFTP_PASSWORD: ${{ secrets.HOSTGATOR_FTP_PASSWORD }}   # read by lftp --env-password (safe for special chars)
           FTP_DIR: ${{ secrets.HOSTGATOR_FTP_DIR }}
         run: |
           set -euo pipefail
@@ -104,14 +105,14 @@ jobs:
           echo "Publishing to ${REMOTE}"
           # Explicit FTPS. Shared hosts often present a cert for the server
           # hostname rather than the domain, so cert verification is relaxed;
-          # the session is still encrypted.
-          lftp -c "
+          # the session is still encrypted. Credentials passed via args / env,
+          # never interpolated into the command string.
+          lftp -u "$FTP_USERNAME" --env-password "$FTP_SERVER" -e "
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ssl:verify-certificate no;
             set net:max-retries 3;
             set net:timeout 20;
-            open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
             mirror --reverse --verbose --no-perms --parallel=2 ./deploy/ '${REMOTE}/';
             bye;
           "
