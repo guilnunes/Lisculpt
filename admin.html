@@ -507,7 +507,16 @@
   let ARTISTS = [];
   let artworkCounts = {};
   let artworkMissing = {};
+  let artistTr = {};       // artist_id -> { lang: hasBio }
+  let galleryTr = {};      // artwork_id -> { lang: hasDescription }
   let pendingDeleteId = null;
+
+  // true when an artist has English bio text but no pt-BR translation
+  function missingPt(a) {
+    const tr = artistTr[a.id] || {};
+    const hasEn = tr['en'] || !!(a.bio && a.bio.trim());
+    return hasEn && !tr['pt-BR'];
+  }
 
   // Small amber "needs image" pill
   function needBadge(text) {
@@ -530,6 +539,13 @@
     (counts || []).forEach(r => {
       artworkCounts[r.artist_id] = (artworkCounts[r.artist_id] || 0) + 1;
       if (!r.image) artworkMissing[r.artist_id] = (artworkMissing[r.artist_id] || 0) + 1;
+    });
+
+    // which artists have a pt-BR bio?
+    const { data: trs } = await sb.from('artist_translations').select('artist_id,lang,bio');
+    artistTr = {};
+    (trs || []).forEach(r => {
+      (artistTr[r.artist_id] = artistTr[r.artist_id] || {})[r.lang] = !!(r.bio && r.bio.trim());
     });
 
     ARTISTS = artists;
@@ -577,7 +593,7 @@
     tbody.innerHTML = filtered.map(a => `
       <tr>
         <td>
-          <div style="font-weight:500;">${a.name}${a.avatar ? '' : needBadge('no photo')}</div>
+          <div style="font-weight:500;">${a.name}${a.avatar ? '' : needBadge('no photo')}${missingPt(a) ? needBadge('no pt-BR') : ''}</div>
           <div style="font-size:0.7rem; color:#7A7770; margin-top:2px;">${a.id}</div>
         </td>
         <td>${a.country || '—'}</td>
@@ -791,6 +807,17 @@
       .order('id', { ascending: true });
     if (error) { toast('Failed to load artworks', true); return; }
     galleryWorks = data || [];
+
+    // which of this artist's works have a pt-BR description?
+    const ids = galleryWorks.map(w => w.id);
+    galleryTr = {};
+    if (ids.length) {
+      const { data: wtrs } = await sb.from('artwork_translations')
+        .select('artwork_id,lang,description').in('artwork_id', ids);
+      (wtrs || []).forEach(r => {
+        (galleryTr[r.artwork_id] = galleryTr[r.artwork_id] || {})[r.lang] = !!(r.description && r.description.trim());
+      });
+    }
     renderGallery();
   }
 
@@ -812,7 +839,11 @@
           <div style="padding:0.6rem 0.75rem;">
             <div style="font-weight:500; font-size:0.82rem;">${w.title || '—'}</div>
             <div style="font-size:0.7rem; color:#7A7770; margin-top:2px;">${[w.material, w.year].filter(Boolean).join(' · ') || '—'}</div>
-            <div style="font-size:0.6rem; color:${w.material_aat_uri ? '#3f7a3f' : '#b08a3f'}; margin-top:3px;">${w.material_aat_uri ? 'AAT ✓' : 'AAT —'}</div>
+            <div style="font-size:0.6rem; margin-top:3px;">
+              <span style="color:${w.material_aat_uri ? '#3f7a3f' : '#b08a3f'};">${w.material_aat_uri ? 'AAT ✓' : 'AAT —'}</span>
+              ${(() => { const tr = galleryTr[w.id] || {}; const hasEn = tr['en'] || !!(w.description && w.description.trim());
+                         return (hasEn && !tr['pt-BR']) ? `<span style="color:#b08a3f; margin-left:6px;">no pt-BR</span>` : ''; })()}
+            </div>
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:0.6rem;">
               <button class="btn btn-ghost" style="padding:4px 10px;" onclick="openArtworkModal('${w.id}')">Edit</button>
               ${w.is_cover
